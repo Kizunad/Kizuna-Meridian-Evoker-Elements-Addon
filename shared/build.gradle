@@ -1,0 +1,23 @@
+description = '五脏诀唯一功法目录与五脏炼化配方包，不包含运行时代码。'
+
+// 导出器只在构建期运行，不进入正式 JAR；它不读本模块的输出，避免资源目录与导出任务互相依赖。
+sourceSets {
+    tooling
+}
+dependencies {
+    toolingImplementation 'local.meridian:server'
+}
+
+def bundleSource = file('src/bundle/meridian_evoker.txtpb')
+def contentDirectory = layout.buildDirectory.dir('generated/evoker-content')
+def exportBundle = tasks.register('exportEvokerBundle', JavaExec) {
+    group = 'build'
+    classpath = sourceSets.tooling.runtimeClasspath
+    mainClass = 'dev.kizuna.meridian.evoker.tooling.ExportEvokerBundle'
+    args bundleSource.absolutePath, contentDirectory.get().asFile.absolutePath
+    inputs.file(bundleSource)
+    inputs.files(sourceSets.tooling.runtimeClasspath)
+    outputs.dir(contentDirectory)
+}
+// 导出的 Protobuf 内容包与目录同为本模块的资源，fabric 打包时一并取走。
+sourceSets.main.resources.srcDir(exportBundle)

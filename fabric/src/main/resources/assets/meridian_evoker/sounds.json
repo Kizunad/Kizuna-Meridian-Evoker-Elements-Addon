@@ -1,0 +1,184 @@
+{
+  "metal_arms.flap": {
+    "subtitle": "subtitles.meridian_evoker.metal_arms.flap",
+    "sounds": [
+      {
+        "name": "minecraft:entity.parrot.fly",
+        "type": "event"
+      }
+    ]
+  },
+  "metal_arms.cast": {
+    "subtitle": "subtitles.meridian_evoker.metal_arms.cast",
+    "sounds": [
+      {
+        "name": "minecraft:item.armor.equip_iron",
+        "type": "event"
+      }
+    ]
+  },
+  "earth_legs.step": {
+    "subtitle": "subtitles.meridian_evoker.earth_legs.step",
+    "sounds": [
+      {
+        "name": "minecraft:entity.polar_bear.step",
+        "type": "event"
+      }
+    ]
+  },
+  "earth_legs.cast": {
+    "subtitle": "subtitles.meridian_evoker.earth_legs.cast",
+    "sounds": [
+      {
+        "name": "minecraft:block.rooted_dirt.place",
+        "type": "event"
+      }
+    ]
+  },
+  "fire_heart.inhale": {
+    "subtitle": "subtitles.meridian_evoker.fire_heart.inhale",
+    "sounds": [
+      {
+        "name": "meridian_evoker:breath/inhale_short"
+      }
+    ]
+  },
+  "fire_heart.cast": {
+    "subtitle": "subtitles.meridian_evoker.fire_heart.cast",
+    "sounds": [
+      {
+        "name": "minecraft:entity.warden.heartbeat",
+        "type": "event"
+      }
+    ]
+  },
+  "water_return.step": {
+    "subtitle": "subtitles.meridian_evoker.water_return.step",
+    "sounds": [
+      {
+        "name": "minecraft:entity.goat.step",
+        "type": "event"
+      }
+    ]
+  },
+  "water_return.cast": {
+    "subtitle": "subtitles.meridian_evoker.water_return.cast",
+    "sounds": [
+      {
+        "name": "minecraft:block.pointed_dripstone.drip_water",
+        "type": "event"
+      }
+    ]
+  },
+  "wood_sinew.pounce": {
+    "subtitle": "subtitles.meridian_evoker.wood_sinew.pounce",
+    "sounds": [
+      {
+        "name": "minecraft:entity.cat.hiss",
+        "type": "event"
+      }
+    ]
+  },
+  "wood_sinew.cast": {
+    "subtitle": "subtitles.meridian_evoker.wood_sinew.cast",
+    "sounds": [
+      {
+        "name": "minecraft:block.azalea_leaves.place",
+        "type": "event"
+      }
+    ]
+  },
+  "refine.inhale": {
+    "subtitle": "subtitles.meridian_evoker.refine.inhale",
+    "sounds": [
+      {
+        "name": "meridian_evoker:breath/inhale"
+      }
+    ]
+  },
+  "refine.exhale_si": {
+    "subtitle": "subtitles.meridian_evoker.refine.exhale_si",
+    "sounds": [
+      {
+        "name": "meridian_evoker:breath/exhale_si"
+      }
+    ]
+  },
+  "refine.exhale_hu": {
+    "subtitle": "subtitles.meridian_evoker.refine.exhale_hu",
+    "sounds": [
+      {
+        "name": "meridian_evoker:breath/exhale_hu"
+      }
+    ]
+  },
+  "refine.exhale_he": {
+    "subtitle": "subtitles.meridian_evoker.refine.exhale_he",
+    "sounds": [
+      {
+        "name": "meridian_evoker:breath/exhale_he"
+      }
+    ]
+  },
+  "refine.exhale_chui": {
+    "subtitle": "subtitles.meridian_evoker.refine.exhale_chui",
+    "sounds": [
+      {
+        "name": "meridian_evoker:breath/exhale_chui"
+      }
+    ]
+  },
+  "refine.exhale_xu": {
+    "subtitle": "subtitles.meridian_evoker.refine.exhale_xu",
+    "sounds": [
+      {
+        "name": "meridian_evoker:breath/exhale_xu"
+      }
+    ]
+  },
+  "refine.cue_metal": {
+    "subtitle": "subtitles.meridian_evoker.refine.cue_metal",
+    "sounds": [
+      {
+        "name": "minecraft:block.amethyst_block.chime",
+        "type": "event"
+      }
+    ]
+  },
+  "refine.cue_earth": {
+    "subtitle": "subtitles.meridian_evoker.refine.cue_earth",
+    "sounds": [
+      {
+        "name": "minecraft:block.sand.step",
+        "type": "event"
+      }
+    ]
+  },
+  "refine.cue_fire": {
+    "subtitle": "subtitles.meridian_evoker.refine.cue_fire",
+    "sounds": [
+      {
+        "name": "minecraft:entity.warden.heartbeat",
+        "type": "event"
+      }
+    ]
+  },
+  "refine.cue_water": {
+    "subtitle": "subtitles.meridian_evoker.refine.cue_water",
+    "sounds": [
+      {
+        "name": "minecraft:block.pointed_dripstone.drip_water",
+        "type": "event"
+      }
+    ]
+  },
+  "refine.cue_wood": {
+    "subtitle": "subtitles.meridian_evoker.refine.cue_wood",
+    "sounds": [
+      {
+        "name": "minecraft:block.azalea_leaves.place",
+        "type": "event"
+      }
+    ]
+  }
+}

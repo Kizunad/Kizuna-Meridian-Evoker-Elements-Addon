@@ -1,0 +1,131 @@
+# 五脏诀的五脏炼化配方：每种器官 × 每种相态一条，产物与投入同一密度（原稿 §4.3）。
+# 炼化率：游炁 3%（占位）、真炁 7.5%、化元 20%；最低境界取本行开脉层与相态里高的那个。
+# 投料与产物的差额由 Framework 以无属性游离态释放到环境。
+schema_version: 1
+manifest {
+  namespace: "meridian_evoker"
+  content_version: 1
+  api_versions { minimum: 1 maximum: 1 }
+  dependencies { namespace: "human" versions { minimum: 1 maximum: 1 } }
+  required_capabilities: "meridian:organ_recipes_v1"
+  supported_hosts: "meridian:java_reference"
+  supported_hosts: "meridian:fabric"
+  supported_hosts: "bong:server"
+}
+organ_recipes {
+  id: "meridian_evoker:refine_lung_free"
+  version: 1
+  organ_kind: "human:lung"
+  input { entries { attribute: "meridian:none" amount: 1 density: 0.01 } }
+  output { entries { attribute: "meridian:metal" amount: 0.03 density: 0.01 } }
+  duration_millis: 2000
+  minimum_realm: WANDERING_QI
+}
+organ_recipes {
+  id: "meridian_evoker:refine_lung_gas"
+  version: 1
+  organ_kind: "human:lung"
+  input { entries { attribute: "meridian:none" amount: 1 density: 0.1 } }
+  output { entries { attribute: "meridian:metal" amount: 0.075 density: 0.1 } }
+  duration_millis: 2000
+  minimum_realm: TRUE_QI
+}
+organ_recipes {
+  id: "meridian_evoker:refine_lung_liquid"
+  version: 1
+  organ_kind: "human:lung"
+  input { entries { attribute: "meridian:none" amount: 1 density: 1 } }
+  output { entries { attribute: "meridian:metal" amount: 0.2 density: 1 } }
+  duration_millis: 2000
+  minimum_realm: ESSENCE_TRANSFORMATION
+}
+organ_recipes {
+  id: "meridian_evoker:refine_spleen_free"
+  version: 1
+  organ_kind: "human:spleen"
+  input { entries { attribute: "meridian:none" amount: 1 density: 0.01 } }
+  output { entries { attribute: "meridian:earth" amount: 0.03 density: 0.01 } }
+  duration_millis: 2000
+  minimum_realm: WANDERING_QI
+}
+organ_recipes {
+  id: "meridian_evoker:refine_spleen_gas"
+  version: 1
+  organ_kind: "human:spleen"
+  input { entries { attribute: "meridian:none" amount: 1 density: 0.1 } }
+  output { entries { attribute: "meridian:earth" amount: 0.075 density: 0.1 } }
+  duration_millis: 2000
+  minimum_realm: TRUE_QI
+}
+organ_recipes {
+  id: "meridian_evoker:refine_spleen_liquid"
+  version: 1
+  organ_kind: "human:spleen"
+  input { entries { attribute: "meridian:none" amount: 1 density: 1 } }
+  output { entries { attribute: "meridian:earth" amount: 0.2 density: 1 } }
+  duration_millis: 2000
+  minimum_realm: ESSENCE_TRANSFORMATION
+}
+organ_recipes {
+  id: "meridian_evoker:refine_heart_gas"
+  version: 1
+  organ_kind: "human:heart"
+  input { entries { attribute: "meridian:none" amount: 1 density: 0.1 } }
+  output { entries { attribute: "meridian:fire" amount: 0.075 density: 0.1 } }
+  duration_millis: 2000
+  minimum_realm: TRUE_QI
+}
+organ_recipes {
+  id: "meridian_evoker:refine_heart_liquid"
+  version: 1
+  organ_kind: "human:heart"
+  input { entries { attribute: "meridian:none" amount: 1 density: 1 } }
+  output { entries { attribute: "meridian:fire" amount: 0.2 density: 1 } }
+  duration_millis: 2000
+  minimum_realm: ESSENCE_TRANSFORMATION
+}
+organ_recipes {
+  id: "meridian_evoker:refine_left_kidney_gas"
+  version: 1
+  organ_kind: "human:left_kidney"
+  input { entries { attribute: "meridian:none" amount: 1 density: 0.1 } }
+  output { entries { attribute: "meridian:water" amount: 0.075 density: 0.1 } }
+  duration_millis: 2000
+  minimum_realm: TRUE_QI
+}
+organ_recipes {
+  id: "meridian_evoker:refine_left_kidney_liquid"
+  version: 1
+  organ_kind: "human:left_kidney"
+  input { entries { attribute: "meridian:none" amount: 1 density: 1 } }
+  output { entries { attribute: "meridian:water" amount: 0.2 density: 1 } }
+  duration_millis: 2000
+  minimum_realm: ESSENCE_TRANSFORMATION
+}
+organ_recipes {
+  id: "meridian_evoker:refine_right_kidney_gas"
+  version: 1
+  organ_kind: "human:right_kidney"
+  input { entries { attribute: "meridian:none" amount: 1 density: 0.1 } }
+  output { entries { attribute: "meridian:water" amount: 0.075 density: 0.1 } }
+  duration_millis: 2000
+  minimum_realm: TRUE_QI
+}
+organ_recipes {
+  id: "meridian_evoker:refine_right_kidney_liquid"
+  version: 1
+  organ_kind: "human:right_kidney"
+  input { entries { attribute: "meridian:none" amount: 1 density: 1 } }
+  output { entries { attribute: "meridian:water" amount: 0.2 density: 1 } }
+  duration_millis: 2000
+  minimum_realm: ESSENCE_TRANSFORMATION
+}
+organ_recipes {
+  id: "meridian_evoker:refine_liver_liquid"
+  version: 1
+  organ_kind: "human:liver"
+  input { entries { attribute: "meridian:none" amount: 1 density: 1 } }
+  output { entries { attribute: "meridian:wood" amount: 0.2 density: 1 } }
+  duration_millis: 2000
+  minimum_realm: ESSENCE_TRANSFORMATION
+}

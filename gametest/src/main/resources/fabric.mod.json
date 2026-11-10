@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "meridian_evoker_test",
+  "version": "1.0.0",
+  "name": "五脏诀整合验证",
+  "environment": "server",
+  "entrypoints": {
+    "fabric-gametest": [
+      "dev.kizuna.meridian.human.fabric.EvokerResourceGameTest",
+      "dev.kizuna.meridian.human.fabric.EvokerPaymentGameTest",
+      "dev.kizuna.meridian.human.fabric.EvokerStrengthenGameTest",
+      "dev.kizuna.meridian.human.fabric.EvokerRefineGameTest"
+    ]
+  },
+  "depends": {"fabric-api": "*", "meridian_technique": "*", "meridian_human_host": "*", "meridian_evoker": "*"}
+}

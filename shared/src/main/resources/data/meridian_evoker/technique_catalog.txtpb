@@ -1,0 +1,1406 @@
+# 五脏诀唯一功法目录：上卷「养」，强身五式与炼元五式（数值全部占位，见 docs/wiki/Integration.md）。
+schema_version: 1
+namespace: "meridian_evoker"
+binding_templates { id: "human:adult" version: 1 }
+books { id: "meridian_evoker:five_organs" display_name: "五脏诀" }
+volumes {
+  id: "meridian_evoker:nourish"
+  book_id: "meridian_evoker:five_organs"
+  display_name: "养"
+  techniques { id: "meridian_evoker:metal_arms" version: 1 }
+  techniques { id: "meridian_evoker:earth_legs" version: 1 }
+  techniques { id: "meridian_evoker:fire_heart" version: 1 }
+  techniques { id: "meridian_evoker:water_return" version: 1 }
+  techniques { id: "meridian_evoker:wood_sinew" version: 1 }
+  techniques { id: "meridian_evoker:refine_lung" version: 1 }
+  techniques { id: "meridian_evoker:refine_spleen" version: 1 }
+  techniques { id: "meridian_evoker:refine_heart" version: 1 }
+  techniques { id: "meridian_evoker:refine_kidney" version: 1 }
+  techniques { id: "meridian_evoker:refine_liver" version: 1 }
+}
+definitions {
+  id: "meridian_evoker:metal_arms"
+  version: 1
+  category: BUFF
+  minimum_realm: WANDERING_QI
+  movement_speed_multiplier: 0.4
+  slots {
+    id: "zang"
+    module: ORGAN
+    tags: "human:zang_metal"
+    minimum_count: 1
+    maximum_count: 2
+  }
+  slots {
+    id: "channels"
+    module: MERIDIAN
+    tags: "human:meridian_metal"
+    minimum_count: 1
+    maximum_count: 4
+    require_opened: true
+  }
+  slots {
+    id: "muscles"
+    module: TISSUE
+    tags: "human:arm_muscle"
+    minimum_count: 1
+    maximum_count: 16
+  }
+  cost {
+    qi {
+      slot_id: "channels"
+      attribute: "meridian:metal"
+      phase: FREE
+      matching: ATTRIBUTE_AT_LEAST_PHASE
+      amount { value: 0.3 unit: QI }
+      distribution: BY_BALANCE
+    }
+    work {
+      slot_id: "zang"
+      power { value: 10 unit: WATT }
+      duration { value: 2 unit: SECOND }
+    }
+  }
+  phases {
+    warmup_millis: 2600
+    active_millis: 0
+    recovery_millis: 2400
+    interruptible_by_damage: true
+  }
+  cooldown_millis: 22000
+  effects {
+    at_millis: 1000
+    sound { sound_id: "meridian_evoker:metal_arms.flap"
+      volume { value: 0.6 unit: RATIO }
+      pitch { value: 0.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 2100
+    sound { sound_id: "meridian_evoker:metal_arms.flap"
+      volume { value: 0.6 unit: RATIO }
+      pitch { value: 0.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 2600
+    status_benefit {
+      id: "meridian_evoker:metal_arms"
+      duration_millis: 24000
+      color_rgb: 13225686
+      tissue {
+        modifiers {
+          slot_id: "muscles"
+          curve { offset_millis: 0 value: 0 }
+          curve { offset_millis: 1000 value: 1 }
+          curve { offset_millis: 20000 value: 1 }
+          curve { offset_millis: 24000 value: 0 }
+          strength_peak { value: 1.25 unit: RATIO }
+          burst_peak { value: 1 unit: RATIO }
+          endurance_peak { value: 1 unit: RATIO }
+          recovery_peak { value: 1 unit: RATIO }
+        }
+      }
+    }
+  }
+  effects {
+    at_millis: 2600
+    sound { sound_id: "meridian_evoker:metal_arms.cast"
+      volume { value: 0.6 unit: RATIO }
+      pitch { value: 1.2 unit: RATIO }
+      anchor: CASTER }
+  }
+  ai_hints {
+    minimum_distance { value: 0 unit: METER }
+    maximum_distance { value: 1024 unit: METER }
+    maximum_hp_ratio { value: 1 unit: RATIO }
+    minimum_qi_ratio { value: 0 unit: RATIO }
+    category_weight { value: 0 unit: RATIO }
+  }
+  presentation { display_name: "金臂" description: "鸟飞展翅，肺金之气贯入两臂，两臂力量渐增。" }
+}
+definitions {
+  id: "meridian_evoker:earth_legs"
+  version: 1
+  category: BUFF
+  minimum_realm: WANDERING_QI
+  movement_speed_multiplier: 0.4
+  slots {
+    id: "zang"
+    module: ORGAN
+    tags: "human:zang_earth"
+    minimum_count: 1
+    maximum_count: 1
+  }
+  slots {
+    id: "channels"
+    module: MERIDIAN
+    tags: "human:meridian_earth"
+    minimum_count: 1
+    maximum_count: 4
+    require_opened: true
+  }
+  slots {
+    id: "muscles"
+    module: TISSUE
+    tags: "human:leg_muscle"
+    minimum_count: 1
+    maximum_count: 16
+  }
+  cost {
+    qi {
+      slot_id: "channels"
+      attribute: "meridian:earth"
+      phase: FREE
+      matching: ATTRIBUTE_AT_LEAST_PHASE
+      amount { value: 0.3 unit: QI }
+      distribution: BY_BALANCE
+    }
+    work {
+      slot_id: "zang"
+      power { value: 12 unit: WATT }
+      duration { value: 2 unit: SECOND }
+    }
+  }
+  phases {
+    warmup_millis: 3200
+    active_millis: 0
+    recovery_millis: 2800
+    interruptible_by_damage: true
+  }
+  cooldown_millis: 43000
+  effects {
+    at_millis: 1400
+    sound { sound_id: "meridian_evoker:earth_legs.step"
+      volume { value: 0.8 unit: RATIO }
+      pitch { value: 0.9 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 2700
+    sound { sound_id: "meridian_evoker:earth_legs.step"
+      volume { value: 0.8 unit: RATIO }
+      pitch { value: 0.9 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 3200
+    status_benefit {
+      id: "meridian_evoker:earth_legs"
+      duration_millis: 45000
+      color_rgb: 12749381
+      tissue {
+        modifiers {
+          slot_id: "muscles"
+          curve { offset_millis: 0 value: 0 }
+          curve { offset_millis: 2000 value: 1 }
+          curve { offset_millis: 40000 value: 1 }
+          curve { offset_millis: 45000 value: 0 }
+          strength_peak { value: 1 unit: RATIO }
+          burst_peak { value: 1 unit: RATIO }
+          endurance_peak { value: 1.5 unit: RATIO }
+          recovery_peak { value: 1 unit: RATIO }
+        }
+      }
+    }
+  }
+  effects {
+    at_millis: 3200
+    sound { sound_id: "meridian_evoker:earth_legs.cast"
+      volume { value: 0.6 unit: RATIO }
+      pitch { value: 0.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  ai_hints {
+    minimum_distance { value: 0 unit: METER }
+    maximum_distance { value: 1024 unit: METER }
+    maximum_hp_ratio { value: 1 unit: RATIO }
+    minimum_qi_ratio { value: 0 unit: RATIO }
+    category_weight { value: 0 unit: RATIO }
+  }
+  presentation { display_name: "厚土" description: "熊晃落步，脾土之气沉入两腿，两腿耐力渐长。" }
+}
+definitions {
+  id: "meridian_evoker:fire_heart"
+  version: 1
+  category: BUFF
+  minimum_realm: TRUE_QI
+  movement_speed_multiplier: 0.4
+  slots {
+    id: "zang"
+    module: ORGAN
+    tags: "human:zang_fire"
+    minimum_count: 1
+    maximum_count: 1
+  }
+  slots {
+    id: "channels"
+    module: MERIDIAN
+    tags: "human:meridian_fire"
+    minimum_count: 1
+    maximum_count: 4
+    require_opened: true
+  }
+  slots {
+    id: "muscles"
+    module: TISSUE
+    tags: "human:arm_muscle"
+    minimum_count: 1
+    maximum_count: 16
+  }
+  cost {
+    qi {
+      slot_id: "channels"
+      attribute: "meridian:fire"
+      phase: FREE
+      matching: ATTRIBUTE_AT_LEAST_PHASE
+      amount { value: 0.4 unit: QI }
+      distribution: BY_BALANCE
+    }
+    work {
+      slot_id: "zang"
+      power { value: 20 unit: WATT }
+      duration { value: 1.5 unit: SECOND }
+    }
+  }
+  phases {
+    warmup_millis: 1800
+    active_millis: 0
+    recovery_millis: 2200
+    interruptible_by_damage: true
+  }
+  cooldown_millis: 16000
+  effects {
+    at_millis: 800
+    sound { sound_id: "meridian_evoker:fire_heart.inhale"
+      volume { value: 0.4 unit: RATIO }
+      pitch { value: 1.2 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 1800
+    status_benefit {
+      id: "meridian_evoker:fire_heart"
+      duration_millis: 18000
+      color_rgb: 14828843
+      tissue {
+        modifiers {
+          slot_id: "muscles"
+          curve { offset_millis: 0 value: 0 }
+          curve { offset_millis: 500 value: 1 }
+          curve { offset_millis: 8000 value: 1 }
+          curve { offset_millis: 10000 value: -0.5 }
+          curve { offset_millis: 16000 value: -0.5 }
+          curve { offset_millis: 18000 value: 0 }
+          strength_peak { value: 1 unit: RATIO }
+          burst_peak { value: 1.4 unit: RATIO }
+          endurance_peak { value: 1 unit: RATIO }
+          recovery_peak { value: 1 unit: RATIO }
+        }
+      }
+    }
+  }
+  effects {
+    at_millis: 1800
+    sound { sound_id: "meridian_evoker:fire_heart.cast"
+      volume { value: 0.7 unit: RATIO }
+      pitch { value: 1.3 unit: RATIO }
+      anchor: CASTER }
+  }
+  ai_hints {
+    minimum_distance { value: 0 unit: METER }
+    maximum_distance { value: 1024 unit: METER }
+    maximum_hp_ratio { value: 1 unit: RATIO }
+    minimum_qi_ratio { value: 0 unit: RATIO }
+    category_weight { value: 0 unit: RATIO }
+  }
+  presentation { display_name: "心火" description: "猿提提气，心火骤起，两臂功率暴涨；火退之后两臂虚脱一阵。" }
+}
+definitions {
+  id: "meridian_evoker:water_return"
+  version: 1
+  category: BUFF
+  minimum_realm: TRUE_QI
+  movement_speed_multiplier: 0.4
+  slots {
+    id: "zang"
+    module: ORGAN
+    tags: "human:zang_water"
+    minimum_count: 1
+    maximum_count: 2
+  }
+  slots {
+    id: "channels"
+    module: MERIDIAN
+    tags: "human:meridian_water"
+    minimum_count: 1
+    maximum_count: 4
+    require_opened: true
+  }
+  slots {
+    id: "muscles"
+    module: TISSUE
+    tags: "human:leg_muscle"
+    minimum_count: 1
+    maximum_count: 16
+  }
+  cost {
+    qi {
+      slot_id: "channels"
+      attribute: "meridian:water"
+      phase: FREE
+      matching: ATTRIBUTE_AT_LEAST_PHASE
+      amount { value: 0.3 unit: QI }
+      distribution: BY_BALANCE
+    }
+    work {
+      slot_id: "zang"
+      power { value: 10 unit: WATT }
+      duration { value: 2 unit: SECOND }
+    }
+  }
+  phases {
+    warmup_millis: 2400
+    active_millis: 0
+    recovery_millis: 2600
+    interruptible_by_damage: true
+  }
+  cooldown_millis: 18000
+  effects {
+    at_millis: 900
+    sound { sound_id: "meridian_evoker:water_return.step"
+      volume { value: 0.6 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 2400
+    status_benefit {
+      id: "meridian_evoker:water_return"
+      duration_millis: 20000
+      color_rgb: 3108560
+      tissue {
+        modifiers {
+          slot_id: "muscles"
+          curve { offset_millis: 0 value: 0 }
+          curve { offset_millis: 2000 value: 1 }
+          curve { offset_millis: 15000 value: 1 }
+          curve { offset_millis: 20000 value: 0 }
+          strength_peak { value: 1 unit: RATIO }
+          burst_peak { value: 1 unit: RATIO }
+          endurance_peak { value: 1 unit: RATIO }
+          recovery_peak { value: 3 unit: RATIO }
+        }
+      }
+    }
+  }
+  effects {
+    at_millis: 2400
+    sound { sound_id: "meridian_evoker:water_return.cast"
+      volume { value: 0.8 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  ai_hints {
+    minimum_distance { value: 0 unit: METER }
+    maximum_distance { value: 1024 unit: METER }
+    maximum_hp_ratio { value: 1 unit: RATIO }
+    minimum_qi_ratio { value: 0 unit: RATIO }
+    category_weight { value: 0 unit: RATIO }
+  }
+  presentation { display_name: "归水" description: "鹿抵回身，肾水归于两腿，两腿恢复加快。" }
+}
+definitions {
+  id: "meridian_evoker:wood_sinew"
+  version: 1
+  category: BUFF
+  minimum_realm: ESSENCE_TRANSFORMATION
+  movement_speed_multiplier: 0.4
+  slots {
+    id: "zang"
+    module: ORGAN
+    tags: "human:zang_wood"
+    minimum_count: 1
+    maximum_count: 1
+  }
+  slots {
+    id: "channels"
+    module: MERIDIAN
+    tags: "human:meridian_wood"
+    minimum_count: 1
+    maximum_count: 4
+    require_opened: true
+  }
+  slots {
+    id: "muscles"
+    module: TISSUE
+    tags: "human:leg_muscle"
+    minimum_count: 1
+    maximum_count: 16
+  }
+  cost {
+    qi {
+      slot_id: "channels"
+      attribute: "meridian:wood"
+      phase: FREE
+      matching: ATTRIBUTE_AT_LEAST_PHASE
+      amount { value: 0.3 unit: QI }
+      distribution: BY_BALANCE
+    }
+    work {
+      slot_id: "zang"
+      power { value: 12 unit: WATT }
+      duration { value: 2 unit: SECOND }
+    }
+  }
+  phases {
+    warmup_millis: 2800
+    active_millis: 0
+    recovery_millis: 2200
+    interruptible_by_damage: true
+  }
+  cooldown_millis: 22000
+  effects {
+    at_millis: 2800
+    status_benefit {
+      id: "meridian_evoker:wood_sinew"
+      duration_millis: 24000
+      color_rgb: 5219642
+      tissue {
+        modifiers {
+          slot_id: "muscles"
+          curve { offset_millis: 0 value: 0 }
+          curve { offset_millis: 1000 value: 1 }
+          curve { offset_millis: 20000 value: 1 }
+          curve { offset_millis: 24000 value: 0 }
+          strength_peak { value: 1.2 unit: RATIO }
+          burst_peak { value: 1.2 unit: RATIO }
+          endurance_peak { value: 1 unit: RATIO }
+          recovery_peak { value: 1 unit: RATIO }
+        }
+      }
+    }
+  }
+  effects {
+    at_millis: 2800
+    sound { sound_id: "meridian_evoker:wood_sinew.pounce"
+      volume { value: 0.5 unit: RATIO }
+      pitch { value: 0.6 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 2800
+    sound { sound_id: "meridian_evoker:wood_sinew.cast"
+      volume { value: 0.5 unit: RATIO }
+      pitch { value: 0.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  ai_hints {
+    minimum_distance { value: 0 unit: METER }
+    maximum_distance { value: 1024 unit: METER }
+    maximum_hp_ratio { value: 1 unit: RATIO }
+    minimum_qi_ratio { value: 0 unit: RATIO }
+    category_weight { value: 0 unit: RATIO }
+  }
+  presentation { display_name: "舒筋" description: "虎扑舒筋，肝木之气通达两腿，腿上力量与功率同增。" }
+}
+definitions {
+  id: "meridian_evoker:refine_lung"
+  version: 1
+  category: CULTIVATION
+  minimum_realm: WANDERING_QI
+  movement_speed_multiplier: 0
+  slots {
+    id: "zang"
+    module: ORGAN
+    tags: "human:zang_metal"
+    minimum_count: 1
+    maximum_count: 2
+  }
+  slots {
+    id: "channels"
+    module: MERIDIAN
+    tags: "human:meridian_metal"
+    minimum_count: 1
+    maximum_count: 4
+    require_opened: true
+  }
+  cost {
+    work {
+      slot_id: "zang"
+      power { value: 5 unit: WATT }
+      duration { value: 30 unit: SECOND }
+    }
+  }
+  phases {
+    warmup_millis: 31000
+    active_millis: 0
+    recovery_millis: 1000
+    interruptible_by_damage: true
+  }
+  cooldown_millis: 30000
+  effects {
+    at_millis: 1000
+    organ_refine {
+      organ_slot_id: "zang"
+      meridian_slot_id: "channels"
+      recipe_family: "meridian_evoker:refine"
+      batch_millis: 2000
+      duration_millis: 30000
+    }
+  }
+  effects {
+    at_millis: 1000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 3000
+    sound { sound_id: "meridian_evoker:refine.exhale_si"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 3000
+    sound { sound_id: "meridian_evoker:refine.cue_metal"
+      volume { value: 0.15 unit: RATIO }
+      pitch { value: 1.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 6000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 8000
+    sound { sound_id: "meridian_evoker:refine.exhale_si"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 8000
+    sound { sound_id: "meridian_evoker:refine.cue_metal"
+      volume { value: 0.15 unit: RATIO }
+      pitch { value: 1.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 11000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 13000
+    sound { sound_id: "meridian_evoker:refine.exhale_si"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 13000
+    sound { sound_id: "meridian_evoker:refine.cue_metal"
+      volume { value: 0.15 unit: RATIO }
+      pitch { value: 1.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 16000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 18000
+    sound { sound_id: "meridian_evoker:refine.exhale_si"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 18000
+    sound { sound_id: "meridian_evoker:refine.cue_metal"
+      volume { value: 0.15 unit: RATIO }
+      pitch { value: 1.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 21000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 23000
+    sound { sound_id: "meridian_evoker:refine.exhale_si"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 23000
+    sound { sound_id: "meridian_evoker:refine.cue_metal"
+      volume { value: 0.15 unit: RATIO }
+      pitch { value: 1.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 26000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 28000
+    sound { sound_id: "meridian_evoker:refine.exhale_si"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 28000
+    sound { sound_id: "meridian_evoker:refine.cue_metal"
+      volume { value: 0.15 unit: RATIO }
+      pitch { value: 1.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  ai_hints {
+    minimum_distance { value: 0 unit: METER }
+    maximum_distance { value: 1024 unit: METER }
+    maximum_hp_ratio { value: 1 unit: RATIO }
+    minimum_qi_ratio { value: 0 unit: RATIO }
+    category_weight { value: 0 unit: RATIO }
+  }
+  presentation { display_name: "肺炼" description: "呬字诀吐纳六遍，两肺从本脏经取无属性真元，炼成金行真元送回本脏经；炼化有损耗，站定才能练。" }
+}
+definitions {
+  id: "meridian_evoker:refine_spleen"
+  version: 1
+  category: CULTIVATION
+  minimum_realm: WANDERING_QI
+  movement_speed_multiplier: 0
+  slots {
+    id: "zang"
+    module: ORGAN
+    tags: "human:zang_earth"
+    minimum_count: 1
+    maximum_count: 1
+  }
+  slots {
+    id: "channels"
+    module: MERIDIAN
+    tags: "human:meridian_earth"
+    minimum_count: 1
+    maximum_count: 4
+    require_opened: true
+  }
+  cost {
+    work {
+      slot_id: "zang"
+      power { value: 8 unit: WATT }
+      duration { value: 30 unit: SECOND }
+    }
+  }
+  phases {
+    warmup_millis: 31000
+    active_millis: 0
+    recovery_millis: 1000
+    interruptible_by_damage: true
+  }
+  cooldown_millis: 30000
+  effects {
+    at_millis: 1000
+    organ_refine {
+      organ_slot_id: "zang"
+      meridian_slot_id: "channels"
+      recipe_family: "meridian_evoker:refine"
+      batch_millis: 2000
+      duration_millis: 30000
+    }
+  }
+  effects {
+    at_millis: 1000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 2000
+    sound { sound_id: "meridian_evoker:refine.exhale_hu"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 2000
+    sound { sound_id: "meridian_evoker:refine.cue_earth"
+      volume { value: 0.2 unit: RATIO }
+      pitch { value: 0.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 6000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 7000
+    sound { sound_id: "meridian_evoker:refine.exhale_hu"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 7000
+    sound { sound_id: "meridian_evoker:refine.cue_earth"
+      volume { value: 0.2 unit: RATIO }
+      pitch { value: 0.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 11000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 12000
+    sound { sound_id: "meridian_evoker:refine.exhale_hu"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 12000
+    sound { sound_id: "meridian_evoker:refine.cue_earth"
+      volume { value: 0.2 unit: RATIO }
+      pitch { value: 0.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 16000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 17000
+    sound { sound_id: "meridian_evoker:refine.exhale_hu"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 17000
+    sound { sound_id: "meridian_evoker:refine.cue_earth"
+      volume { value: 0.2 unit: RATIO }
+      pitch { value: 0.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 21000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 22000
+    sound { sound_id: "meridian_evoker:refine.exhale_hu"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 22000
+    sound { sound_id: "meridian_evoker:refine.cue_earth"
+      volume { value: 0.2 unit: RATIO }
+      pitch { value: 0.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 26000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 27000
+    sound { sound_id: "meridian_evoker:refine.exhale_hu"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 27000
+    sound { sound_id: "meridian_evoker:refine.cue_earth"
+      volume { value: 0.2 unit: RATIO }
+      pitch { value: 0.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  ai_hints {
+    minimum_distance { value: 0 unit: METER }
+    maximum_distance { value: 1024 unit: METER }
+    maximum_hp_ratio { value: 1 unit: RATIO }
+    minimum_qi_ratio { value: 0 unit: RATIO }
+    category_weight { value: 0 unit: RATIO }
+  }
+  presentation { display_name: "脾炼" description: "呼字诀吐纳六遍，脾从本脏经取无属性真元，炼成土行真元送回本脏经；炼化有损耗，站定才能练。" }
+}
+definitions {
+  id: "meridian_evoker:refine_heart"
+  version: 1
+  category: CULTIVATION
+  minimum_realm: TRUE_QI
+  movement_speed_multiplier: 0
+  slots {
+    id: "zang"
+    module: ORGAN
+    tags: "human:zang_fire"
+    minimum_count: 1
+    maximum_count: 1
+  }
+  slots {
+    id: "channels"
+    module: MERIDIAN
+    tags: "human:meridian_fire"
+    minimum_count: 1
+    maximum_count: 4
+    require_opened: true
+  }
+  cost {
+    work {
+      slot_id: "zang"
+      power { value: 10 unit: WATT }
+      duration { value: 30 unit: SECOND }
+    }
+  }
+  phases {
+    warmup_millis: 31000
+    active_millis: 0
+    recovery_millis: 1000
+    interruptible_by_damage: true
+  }
+  cooldown_millis: 30000
+  effects {
+    at_millis: 1000
+    organ_refine {
+      organ_slot_id: "zang"
+      meridian_slot_id: "channels"
+      recipe_family: "meridian_evoker:refine"
+      batch_millis: 2000
+      duration_millis: 30000
+    }
+  }
+  effects {
+    at_millis: 2000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 4500
+    sound { sound_id: "meridian_evoker:refine.exhale_he"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 4500
+    sound { sound_id: "meridian_evoker:refine.cue_fire"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 7000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 9500
+    sound { sound_id: "meridian_evoker:refine.exhale_he"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 9500
+    sound { sound_id: "meridian_evoker:refine.cue_fire"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 12000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 14500
+    sound { sound_id: "meridian_evoker:refine.exhale_he"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 14500
+    sound { sound_id: "meridian_evoker:refine.cue_fire"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 17000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 19500
+    sound { sound_id: "meridian_evoker:refine.exhale_he"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 19500
+    sound { sound_id: "meridian_evoker:refine.cue_fire"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 22000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 24500
+    sound { sound_id: "meridian_evoker:refine.exhale_he"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 24500
+    sound { sound_id: "meridian_evoker:refine.cue_fire"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 27000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 29500
+    sound { sound_id: "meridian_evoker:refine.exhale_he"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 29500
+    sound { sound_id: "meridian_evoker:refine.cue_fire"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  ai_hints {
+    minimum_distance { value: 0 unit: METER }
+    maximum_distance { value: 1024 unit: METER }
+    maximum_hp_ratio { value: 1 unit: RATIO }
+    minimum_qi_ratio { value: 0 unit: RATIO }
+    category_weight { value: 0 unit: RATIO }
+  }
+  presentation { display_name: "心炼" description: "呵字诀吐纳六遍，心从本脏经取无属性真元，炼成火行真元送回本脏经；炼化有损耗，站定才能练。" }
+}
+definitions {
+  id: "meridian_evoker:refine_kidney"
+  version: 1
+  category: CULTIVATION
+  minimum_realm: TRUE_QI
+  movement_speed_multiplier: 0
+  slots {
+    id: "zang"
+    module: ORGAN
+    tags: "human:zang_water"
+    minimum_count: 1
+    maximum_count: 2
+  }
+  slots {
+    id: "channels"
+    module: MERIDIAN
+    tags: "human:meridian_water"
+    minimum_count: 1
+    maximum_count: 4
+    require_opened: true
+  }
+  cost {
+    work {
+      slot_id: "zang"
+      power { value: 5 unit: WATT }
+      duration { value: 30 unit: SECOND }
+    }
+  }
+  phases {
+    warmup_millis: 31000
+    active_millis: 0
+    recovery_millis: 1000
+    interruptible_by_damage: true
+  }
+  cooldown_millis: 30000
+  effects {
+    at_millis: 1000
+    organ_refine {
+      organ_slot_id: "zang"
+      meridian_slot_id: "channels"
+      recipe_family: "meridian_evoker:refine"
+      batch_millis: 2000
+      duration_millis: 30000
+    }
+  }
+  effects {
+    at_millis: 1000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 3000
+    sound { sound_id: "meridian_evoker:refine.exhale_chui"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 3000
+    sound { sound_id: "meridian_evoker:refine.cue_water"
+      volume { value: 0.4 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 6000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 8000
+    sound { sound_id: "meridian_evoker:refine.exhale_chui"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 8000
+    sound { sound_id: "meridian_evoker:refine.cue_water"
+      volume { value: 0.4 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 11000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 13000
+    sound { sound_id: "meridian_evoker:refine.exhale_chui"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 13000
+    sound { sound_id: "meridian_evoker:refine.cue_water"
+      volume { value: 0.4 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 16000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 18000
+    sound { sound_id: "meridian_evoker:refine.exhale_chui"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 18000
+    sound { sound_id: "meridian_evoker:refine.cue_water"
+      volume { value: 0.4 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 21000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 23000
+    sound { sound_id: "meridian_evoker:refine.exhale_chui"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 23000
+    sound { sound_id: "meridian_evoker:refine.cue_water"
+      volume { value: 0.4 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 26000
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 28000
+    sound { sound_id: "meridian_evoker:refine.exhale_chui"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 28000
+    sound { sound_id: "meridian_evoker:refine.cue_water"
+      volume { value: 0.4 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  ai_hints {
+    minimum_distance { value: 0 unit: METER }
+    maximum_distance { value: 1024 unit: METER }
+    maximum_hp_ratio { value: 1 unit: RATIO }
+    minimum_qi_ratio { value: 0 unit: RATIO }
+    category_weight { value: 0 unit: RATIO }
+  }
+  presentation { display_name: "肾炼" description: "吹字诀吐纳六遍，两肾从本脏经取无属性真元，炼成水行真元送回本脏经；炼化有损耗，站定才能练。" }
+}
+definitions {
+  id: "meridian_evoker:refine_liver"
+  version: 1
+  category: CULTIVATION
+  minimum_realm: ESSENCE_TRANSFORMATION
+  movement_speed_multiplier: 0
+  slots {
+    id: "zang"
+    module: ORGAN
+    tags: "human:zang_wood"
+    minimum_count: 1
+    maximum_count: 1
+  }
+  slots {
+    id: "channels"
+    module: MERIDIAN
+    tags: "human:meridian_wood"
+    minimum_count: 1
+    maximum_count: 4
+    require_opened: true
+  }
+  cost {
+    work {
+      slot_id: "zang"
+      power { value: 8 unit: WATT }
+      duration { value: 30 unit: SECOND }
+    }
+  }
+  phases {
+    warmup_millis: 31000
+    active_millis: 0
+    recovery_millis: 1000
+    interruptible_by_damage: true
+  }
+  cooldown_millis: 30000
+  effects {
+    at_millis: 1000
+    organ_refine {
+      organ_slot_id: "zang"
+      meridian_slot_id: "channels"
+      recipe_family: "meridian_evoker:refine"
+      batch_millis: 2000
+      duration_millis: 30000
+    }
+  }
+  effects {
+    at_millis: 1500
+    sound { sound_id: "meridian_evoker:refine.exhale_xu"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 1500
+    sound { sound_id: "meridian_evoker:refine.cue_wood"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 3500
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 6500
+    sound { sound_id: "meridian_evoker:refine.exhale_xu"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 6500
+    sound { sound_id: "meridian_evoker:refine.cue_wood"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 8500
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 11500
+    sound { sound_id: "meridian_evoker:refine.exhale_xu"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 11500
+    sound { sound_id: "meridian_evoker:refine.cue_wood"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 13500
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 16500
+    sound { sound_id: "meridian_evoker:refine.exhale_xu"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 16500
+    sound { sound_id: "meridian_evoker:refine.cue_wood"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 18500
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 21500
+    sound { sound_id: "meridian_evoker:refine.exhale_xu"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 21500
+    sound { sound_id: "meridian_evoker:refine.cue_wood"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 23500
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 26500
+    sound { sound_id: "meridian_evoker:refine.exhale_xu"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 26500
+    sound { sound_id: "meridian_evoker:refine.cue_wood"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 28500
+    sound { sound_id: "meridian_evoker:refine.inhale"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 1 unit: RATIO }
+      anchor: CASTER }
+  }
+  ai_hints {
+    minimum_distance { value: 0 unit: METER }
+    maximum_distance { value: 1024 unit: METER }
+    maximum_hp_ratio { value: 1 unit: RATIO }
+    minimum_qi_ratio { value: 0 unit: RATIO }
+    category_weight { value: 0 unit: RATIO }
+  }
+  presentation { display_name: "肝炼" description: "嘘字诀吐纳六遍，肝从本脏经取无属性真元，炼成木行真元送回本脏经；炼化有损耗，站定才能练。" }
+}

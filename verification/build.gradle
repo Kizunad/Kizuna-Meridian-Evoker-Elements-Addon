@@ -1,0 +1,14 @@
+dependencies {
+    testImplementation 'dev.kizuna.meridian.technique:server'
+    testImplementation 'dev.kizuna.meridian.human:server'
+    testImplementation libs.junit4
+    testImplementation libs.gson
+    testImplementation project(':shared')
+}
+test {
+    useJUnit()
+    // 资源检查读 fabric 模块的声音、语言与贴图源文件，与正式包打进去的是同一份。
+    def fabricResources = project(':fabric').file('src/main/resources')
+    inputs.dir(fabricResources)
+    systemProperty 'evoker.fabricResources', fabricResources.absolutePath
+}
