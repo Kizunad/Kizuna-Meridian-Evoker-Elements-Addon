@@ -9,7 +9,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 
 import java.util.List;
 
-/** 起手门槛：只有本行真元付费，本脏损毁或疲惫、境界不足都由生产施放入口拒绝。 */
+/** 起手门槛：只有本行真元付费，本脏损毁或疲惫、境界不足、经脉未开都由生产施放入口拒绝，并说清缺哪一样。 */
 public final class EvokerPaymentGameTest {
     private static final int TIMEOUT = 40;
     private static final double QI = 2;
@@ -17,7 +17,7 @@ public final class EvokerPaymentGameTest {
     private static final double TOLERANCE = 1e-9;
     private static final double TIRED_WATTS = 20;
     private static final double TIRED_SECONDS = 29.5;
-    private static final String NO_ELEMENT_QI = "身上没有足够的本行真元";
+    private static final String NO_METAL_QI = "金行真元不够：要 0.3，可付 0";
     private static final List<String> METAL_ZANG = EvokerTestPlayer.meridians(List.of("lung"));
     private static final List<String> METAL_FU = EvokerTestPlayer.meridians(List.of("large_intestine"));
     private static final List<String> METAL = EvokerTestPlayer.meridians(List.of("lung", "large_intestine"));
@@ -31,7 +31,7 @@ public final class EvokerPaymentGameTest {
         // 本行经脉里只有无属性真元：费用按属性匹配，拒绝原因是本行真元不足。
         EvokerTestPlayer.ready(context, fixture -> {
             fixture.setQi(METAL, Qi.QiAttribute.NONE, QI, EvokerTestPlayer.FREE_DENSITY);
-            assertNoElementQi(context, fixture.cast("metal_arms"));
+            assertNoMetalQi(context, fixture.cast("metal_arms"));
             EvokerTestPlayer.finish(context, List.of(fixture));
         });
     }
@@ -41,7 +41,7 @@ public final class EvokerPaymentGameTest {
         // 金臂的表里经里放的是火行真元，同样不能付金行费用。
         EvokerTestPlayer.ready(context, fixture -> {
             fixture.setQi(METAL, Qi.QiAttribute.FIRE, QI, EvokerTestPlayer.FREE_DENSITY);
-            assertNoElementQi(context, fixture.cast("metal_arms"));
+            assertNoMetalQi(context, fixture.cast("metal_arms"));
             EvokerTestPlayer.finish(context, List.of(fixture));
         });
     }
@@ -70,8 +70,8 @@ public final class EvokerPaymentGameTest {
             fixture.setQi(EARTH, Qi.QiAttribute.EARTH, QI, EvokerTestPlayer.FREE_DENSITY);
             fixture.destroyOrgan("spleen");
             CastOutcome outcome = fixture.cast("earth_legs");
-            context.assertTrue(outcome.getFailure() == TechniqueFailure.MODULE_UNAVAILABLE && !outcome.hasBinding(),
-                    "脾损毁后厚土没有按模块不可用拒绝：" + outcome);
+            context.assertTrue(outcome.getFailure() == TechniqueFailure.MODULE_UNAVAILABLE && !outcome.hasBinding()
+                    && outcome.getReason().equals("脾脏伤了，这一式用不了"), "脾损毁后厚土没有按模块不可用拒绝：" + outcome);
             EvokerTestPlayer.finish(context, List.of(fixture));
         });
     }
@@ -102,8 +102,8 @@ public final class EvokerPaymentGameTest {
             fixture.setQi(EARTH, Qi.QiAttribute.EARTH, QI, EvokerTestPlayer.FREE_DENSITY);
             fixture.exertOrgan("spleen", TIRED_WATTS, TIRED_SECONDS);
             CastOutcome outcome = fixture.cast("earth_legs");
-            context.assertTrue(outcome.getFailure() == TechniqueFailure.INSUFFICIENT_CAPABILITY,
-                    "疲惫的脾没有按耐力拒绝：" + outcome);
+            context.assertTrue(outcome.getFailure() == TechniqueFailure.INSUFFICIENT_CAPABILITY
+                    && outcome.getReason().equals("脾脏没有余力：要 12 W × 2 s"), "疲惫的脾没有按耐力拒绝：" + outcome);
             EvokerTestPlayer.finish(context, List.of(fixture));
         });
     }
@@ -114,25 +114,39 @@ public final class EvokerPaymentGameTest {
         EvokerTestPlayer.ready(context, fixture -> {
             fixture.setQi(FIRE, Qi.QiAttribute.FIRE, QI, EvokerTestPlayer.FREE_DENSITY);
             fixture.setQi(WOOD, Qi.QiAttribute.WOOD, QI, EvokerTestPlayer.FREE_DENSITY);
-            assertRealmTooLow(context, fixture.cast("fire_heart"), "fire_heart");
+            assertRealmTooLow(context, fixture.cast("fire_heart"), "境界不够：这一式要真炁，你现在是游炁");
             fixture.enterRealm(Realm.TRUE_QI);
-            assertRealmTooLow(context, fixture.cast("wood_sinew"), "wood_sinew");
-            assertRealmTooLow(context, fixture.cast("refine_liver"), "refine_liver");
+            assertRealmTooLow(context, fixture.cast("wood_sinew"), "境界不够：这一式要化元，你现在是真炁");
+            assertRealmTooLow(context, fixture.cast("refine_liver"), "境界不够：这一式要化元，你现在是真炁");
             EvokerTestPlayer.finish(context, List.of(fixture));
         });
     }
 
-    private static void assertNoElementQi(GameTestHelper context, CastOutcome outcome) {
-        // 拒绝码与玩家可读原因都要对上原稿 §4.1。
+    @GameTest(maxTicks = TIMEOUT)
+    public void unopenedChannelsAreNamedWithHowManyMoreToOpen(GameTestHelper context) {
+        // 新角色一条经脉都没开：金臂的表里经槽列出四条候选经脉，至少还要开通一条。
+        EvokerTestPlayer.unopened(context, fixture -> {
+            CastOutcome outcome = fixture.cast("metal_arms");
+            String reason = outcome.getReason();
+            context.assertTrue(outcome.getFailure() == TechniqueFailure.MERIDIAN_NOT_OPENED && !outcome.hasBinding()
+                    && reason.startsWith("经脉未通：") && reason.contains("左手太阴肺经")
+                    && reason.contains("右手阳明大肠经") && reason.endsWith("，还要开通 1 条"),
+                    "经脉未开的拒绝没有点名：" + outcome);
+            EvokerTestPlayer.finish(context, List.of(fixture));
+        });
+    }
+
+    private static void assertNoMetalQi(GameTestHelper context, CastOutcome outcome) {
+        // 拒绝码按原稿 §4.1；说明写出缺哪行真元、要多少、能付多少。
         context.assertTrue(outcome.getFailure() == TechniqueFailure.INSUFFICIENT_ATTRIBUTE_QI
-                && outcome.getReason().equals(NO_ELEMENT_QI) && !outcome.hasBinding(),
+                && outcome.getReason().equals(NO_METAL_QI) && !outcome.hasBinding(),
                 "本行真元不足的拒绝不符：" + outcome);
     }
 
-    private static void assertRealmTooLow(GameTestHelper context, CastOutcome outcome, String technique) {
-        // 境界门槛在绑定与付费之前判定。
-        context.assertTrue(outcome.getFailure() == TechniqueFailure.REALM_TOO_LOW && !outcome.hasBinding(),
-                "境界不足没有拒绝：" + technique + " " + outcome);
+    private static void assertRealmTooLow(GameTestHelper context, CastOutcome outcome, String reason) {
+        // 境界门槛在绑定与付费之前判定，说明写出这一式要的境界和现在的境界。
+        context.assertTrue(outcome.getFailure() == TechniqueFailure.REALM_TOO_LOW && !outcome.hasBinding()
+                && outcome.getReason().equals(reason), "境界不足的拒绝不符：" + outcome);
     }
 
     static boolean succeeded(CastOutcome outcome) {

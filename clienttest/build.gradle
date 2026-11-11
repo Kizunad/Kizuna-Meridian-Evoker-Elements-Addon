@@ -1,0 +1,41 @@
+plugins { alias(libs.plugins.fabric.loom) }
+
+description = '五脏诀上手的真实客户端走查：新世界里拿卷、学卷、被拒、肺炼、金臂、看状态提示、改境界试火行，每步截图。'
+
+dependencies {
+    // 26.x 不混淆：直接用官方名编译，模组依赖也不经重映射。
+    minecraft libs.minecraft
+    implementation libs.fabric.loader
+    implementation libs.fabric.api
+    // 正式数据包按安装 JAR 装入，和 GameTest 一样验证发行包自己的资源。
+    localRuntime files(rootProject.project(':fabric').tasks.named('jar'))
+}
+
+apply from: new File(kizunaWorkspace.directory('framework'), 'scripts/full-assembly.gradle')
+
+loom {
+    mods {
+        meridian_evoker_clienttest { sourceSet sourceSets.main }
+    }
+    runs {
+        clientGametest {
+            client()
+            name '五脏诀客户端走查'
+            runDir providers.gradleProperty('clienttestRunDir').getOrElse('build/clienttest')
+            vmArg '-Dfabric.client.gametest'
+            vmArg '-Dfabric.client.gametest.modid=meridian_evoker_clienttest'
+            programArgs '--width', '1280', '--height', '960'
+            // 离线玩家名决定原版默认皮肤：Player991 是 classic 宽臂，Player507 是 slim 的 Alex。
+            programArgs '--username', providers.gradleProperty('clienttestUsername').getOrElse('Player991')
+        }
+    }
+}
+
+tasks.named('runClientGametest') {
+    doFirst {
+        // 跳过首启无障碍引导，界面用中文，与用户实例一致。
+        def runDirectory = file(providers.gradleProperty('clienttestRunDir').getOrElse('build/clienttest'))
+        runDirectory.mkdirs()
+        new File(runDirectory, 'options.txt').text = 'onboardAccessibility:false\nlang:zh_cn\n'
+    }
+}

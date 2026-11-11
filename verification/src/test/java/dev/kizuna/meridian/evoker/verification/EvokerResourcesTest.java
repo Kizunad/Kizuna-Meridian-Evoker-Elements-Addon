@@ -75,6 +75,19 @@ public final class EvokerResourcesTest {
     }
 
     @Test
+    public void scrollNotesAndStatusSlotLabelsCoverTheCatalog() throws IOException {
+        // 卷轴提示每式补一句 .note；效果提示每条组织修正的槽位都有部位名，提示里不露语言键。
+        TechniqueCatalog catalog = EvokerContent.catalog();
+        for (TechniqueDefinition definition : catalog.getDefinitionsList()) {
+            assertLanguageKey("technique." + translationPath(definition.getId()) + ".note");
+            definition.getEffectsList().stream().filter(TechniqueEffect::hasStatusBenefit)
+                    .map(TechniqueEffect::getStatusBenefit)
+                    .forEach(benefit -> benefit.getTissue().getModifiersList().forEach(modifier ->
+                            assertLanguageKey("effect." + translationPath(benefit.getId()) + "." + modifier.getSlotId())));
+        }
+    }
+
+    @Test
     public void scrollsBackgroundsAndTechniqueIconsCoverTheCatalog() throws IOException {
         // 每卷有 32×32 卷轴物品图和 1536×1024 阅读背景；每式的 icon_id 指向本仓同名图标，带 32 和 64 两档。
         TechniqueCatalog catalog = EvokerContent.catalog();

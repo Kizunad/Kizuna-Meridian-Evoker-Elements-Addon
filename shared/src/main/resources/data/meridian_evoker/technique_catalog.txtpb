@@ -17,6 +17,8 @@ volumes {
   techniques { id: "meridian_evoker:refine_heart" version: 1 }
   techniques { id: "meridian_evoker:refine_kidney" version: 1 }
   techniques { id: "meridian_evoker:refine_liver" version: 1 }
+  # 生存来源：玩家杀死会《养》的唤魔者（Threatening 学卷表的游炁、真炁两档）时掉一卷，概率占位。
+  scroll_drops { entity_type: "minecraft:evoker" chance: 0.25 }
 }
 definitions {
   id: "meridian_evoker:metal_arms"

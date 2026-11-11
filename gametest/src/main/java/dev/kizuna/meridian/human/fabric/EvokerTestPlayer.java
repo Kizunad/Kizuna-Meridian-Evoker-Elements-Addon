@@ -127,6 +127,16 @@ final class EvokerTestPlayer implements AutoCloseable {
         }));
     }
 
+    static void unopened(GameTestHelper context, Consumer<EvokerTestPlayer> action) {
+        // 新角色原样：只学会上卷，不开经脉、不动真元，用来看经脉未通的拒绝。
+        initializeTicks();
+        var fixture = new EvokerTestPlayer(context, 0);
+        context.runAfterDelay(LOGIN_TICKS, () -> guarded(List.of(fixture), () -> {
+            TechniqueFabric.service().learn(fixture.player.getUUID(), VOLUME);
+            action.accept(fixture);
+        }));
+    }
+
     static void later(GameTestHelper context, int ticks, List<EvokerTestPlayer> players, Runnable assertion) {
         // 延迟断言失败时先断开玩家，防止残留施放污染并行用例。
         context.runAfterDelay(ticks, () -> guarded(players, assertion));

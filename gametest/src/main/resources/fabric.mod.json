@@ -9,8 +9,10 @@
       "dev.kizuna.meridian.human.fabric.EvokerResourceGameTest",
       "dev.kizuna.meridian.human.fabric.EvokerPaymentGameTest",
       "dev.kizuna.meridian.human.fabric.EvokerStrengthenGameTest",
-      "dev.kizuna.meridian.human.fabric.EvokerRefineGameTest"
+      "dev.kizuna.meridian.human.fabric.EvokerRefineGameTest",
+      "dev.kizuna.meridian.human.fabric.EvokerScrollGameTest",
+      "dev.kizuna.meridian.human.fabric.EvokerGettingStartedGameTest"
     ]
   },
-  "depends": {"fabric-api": "*", "meridian_technique": "*", "meridian_human_host": "*", "meridian_evoker": "*"}
+  "depends": {"fabric-api": "*", "meridian_technique": "*", "meridian_human_host": "*", "meridian_evoker": "*", "meridian_humanoid_host": "*"}
 }

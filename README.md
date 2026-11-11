@@ -2,4 +2,4 @@
 
 一书三卷的纯数据附属，依赖功法库与 Human。当前只放上卷「养」：强身五式、炼元五式。
 
-文档入口：[接入与验证](docs/wiki/Integration.md)、[声音与图标素材](docs/wiki/Sound-Assets.md)、[卷轴与功法图标美术](docs/wiki/Art.md)。
+文档入口：[五脏诀上手](docs/wiki/Getting-Started.md)（新角色从拿卷到放出金臂、试火水两行）、[接入与验证](docs/wiki/Integration.md)、[声音与图标素材](docs/wiki/Sound-Assets.md)、[卷轴与功法图标美术](docs/wiki/Art.md)。

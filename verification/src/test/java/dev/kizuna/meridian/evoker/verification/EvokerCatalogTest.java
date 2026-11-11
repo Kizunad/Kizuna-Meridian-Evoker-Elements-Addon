@@ -10,6 +10,7 @@ import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.OrganRefine;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.QiCost;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.QiCostMatching;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.QiDistribution;
+import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.ScrollDrop;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.StatusBenefit;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.TechniqueDefinition;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.TechniqueEffect;
@@ -74,7 +75,7 @@ public final class EvokerCatalogTest {
 
     @Test
     public void catalogRegistersOneVolumeOfTenTechniques() throws IOException {
-        // 只有上卷进目录；卷内十式全部登记，书卷 ID 照原稿 §3。
+        // 只有上卷进目录；卷内十式全部登记，书卷 ID 照原稿 §3；卷带唤魔者掉落。
         TechniqueRegistry registry = EvokerContent.registry();
         assertEquals(1, registry.books().size());
         assertEquals(BOOK, registry.books().getFirst().getId());
@@ -84,6 +85,9 @@ public final class EvokerCatalogTest {
         assertEquals(TECHNIQUES, volume.getTechniquesCount());
         assertEquals(TECHNIQUES, registry.definitions().size());
         assertEquals(STRENGTHEN.size() + REFINE.size(), TECHNIQUES);
+        // 生存来源只有一项：玩家杀死会这一卷的唤魔者，概率占位 0.25。
+        assertEquals(List.of(ScrollDrop.newBuilder().setEntityType("minecraft:evoker").setChance(0.25).build()),
+                volume.getScrollDropsList());
     }
 
     @Test
