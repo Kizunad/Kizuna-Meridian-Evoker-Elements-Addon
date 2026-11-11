@@ -24,12 +24,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-/** 正式包的声音、字幕、语言与状态图标逐项对上目录，且不带任何 Java 入口。 */
+/** 正式包的声音、字幕、语言、状态图标、卷轴美术与功法图标逐项对上目录，且不带任何 Java 入口。 */
 public final class EvokerResourcesTest {
     private static final String ASSETS = "assets/" + EvokerContent.NAMESPACE + "/";
     private static final String PREFIX = EvokerContent.NAMESPACE + ":";
     private static final List<String> LANGUAGES = List.of("zh_cn", "en_us");
     private static final int ICON_PIXELS = 18;
+    private static final int SCROLL_PIXELS = 32;
+    private static final int BACKGROUND_WIDTH = 1536;
+    private static final int BACKGROUND_HEIGHT = 1024;
+    private static final int TECHNIQUE_ICON_PIXELS = 32;
+    private static final int LARGE_TECHNIQUE_ICON_PIXELS = 64;
 
     @Test
     public void everyCatalogSoundResolvesWithSubtitles() throws IOException {
@@ -70,6 +75,24 @@ public final class EvokerResourcesTest {
     }
 
     @Test
+    public void scrollsBackgroundsAndTechniqueIconsCoverTheCatalog() throws IOException {
+        // 每卷有 32×32 卷轴物品图和 1536×1024 阅读背景；每式的 icon_id 指向本仓同名图标，带 32 和 64 两档。
+        TechniqueCatalog catalog = EvokerContent.catalog();
+        for (var volume : catalog.getVolumesList()) {
+            String path = volume.getId().substring(PREFIX.length());
+            assertImage(ASSETS + "textures/item/" + path + "_scroll.png", SCROLL_PIXELS, SCROLL_PIXELS);
+            assertImage(ASSETS + "textures/gui/scroll/" + path + ".png", BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
+        }
+        for (TechniqueDefinition definition : catalog.getDefinitionsList()) {
+            String icon = definition.getPresentation().getIconId();
+            assertEquals(definition.getId(), definition.getId(), icon);
+            String path = ASSETS + "textures/gui/technique/" + icon.substring(PREFIX.length());
+            assertImage(path + ".png", TECHNIQUE_ICON_PIXELS, TECHNIQUE_ICON_PIXELS);
+            assertImage(path + "_64.png", LARGE_TECHNIQUE_ICON_PIXELS, LARGE_TECHNIQUE_ICON_PIXELS);
+        }
+    }
+
+    @Test
     public void fabricPackageIsPureData() throws IOException {
         // 正式包没有入口、混入或 Java 源；功法目录路径与 shared 的唯一来源一致。
         JsonObject metadata = json("fabric.mod.json");
@@ -96,6 +119,16 @@ public final class EvokerResourcesTest {
         assertTrue(event, name.startsWith(PREFIX));
         Path file = resource(ASSETS + "sounds/" + name.substring(PREFIX.length()) + ".ogg");
         assertTrue(file.toString(), Files.isRegularFile(file));
+    }
+
+    private static void assertImage(String path, int width, int height) throws IOException {
+        // 贴图能被 ImageIO 解码，尺寸与约定一致。
+        Path file = resource(path);
+        assertTrue(file.toString(), Files.isRegularFile(file));
+        BufferedImage image = ImageIO.read(file.toFile());
+        assertNotNull(file.toString(), image);
+        assertEquals(path, width, image.getWidth());
+        assertEquals(path, height, image.getHeight());
     }
 
     private static void assertLanguageKey(String key) {

@@ -117,7 +117,7 @@ definitions {
     minimum_qi_ratio { value: 0 unit: RATIO }
     category_weight { value: 0 unit: RATIO }
   }
-  presentation { display_name: "金臂" description: "鸟飞展翅，肺金之气贯入两臂，两臂力量渐增。" }
+  presentation { icon_id: "meridian_evoker:metal_arms" display_name: "金臂" description: "鸟飞展翅，肺金之气贯入两臂，两臂力量渐增。" }
 }
 definitions {
   id: "meridian_evoker:earth_legs"
@@ -218,7 +218,7 @@ definitions {
     minimum_qi_ratio { value: 0 unit: RATIO }
     category_weight { value: 0 unit: RATIO }
   }
-  presentation { display_name: "厚土" description: "熊晃落步，脾土之气沉入两腿，两腿耐力渐长。" }
+  presentation { icon_id: "meridian_evoker:earth_legs" display_name: "厚土" description: "熊晃落步，脾土之气沉入两腿，两腿耐力渐长。" }
 }
 definitions {
   id: "meridian_evoker:fire_heart"
@@ -314,7 +314,7 @@ definitions {
     minimum_qi_ratio { value: 0 unit: RATIO }
     category_weight { value: 0 unit: RATIO }
   }
-  presentation { display_name: "心火" description: "猿提提气，心火骤起，两臂功率暴涨；火退之后两臂虚脱一阵。" }
+  presentation { icon_id: "meridian_evoker:fire_heart" display_name: "心火" description: "猿提提气，心火骤起，两臂功率暴涨；火退之后两臂虚脱一阵。" }
 }
 definitions {
   id: "meridian_evoker:water_return"
@@ -408,7 +408,7 @@ definitions {
     minimum_qi_ratio { value: 0 unit: RATIO }
     category_weight { value: 0 unit: RATIO }
   }
-  presentation { display_name: "归水" description: "鹿抵回身，肾水归于两腿，两腿恢复加快。" }
+  presentation { icon_id: "meridian_evoker:water_return" display_name: "归水" description: "鹿抵回身，肾水归于两腿，两腿恢复加快。" }
 }
 definitions {
   id: "meridian_evoker:wood_sinew"
@@ -502,7 +502,7 @@ definitions {
     minimum_qi_ratio { value: 0 unit: RATIO }
     category_weight { value: 0 unit: RATIO }
   }
-  presentation { display_name: "舒筋" description: "虎扑舒筋，肝木之气通达两腿，腿上力量与功率同增。" }
+  presentation { icon_id: "meridian_evoker:wood_sinew" display_name: "舒筋" description: "虎扑舒筋，肝木之气通达两腿，腿上力量与功率同增。" }
 }
 definitions {
   id: "meridian_evoker:refine_lung"
@@ -682,7 +682,7 @@ definitions {
     minimum_qi_ratio { value: 0 unit: RATIO }
     category_weight { value: 0 unit: RATIO }
   }
-  presentation { display_name: "肺炼" description: "呬字诀吐纳六遍，两肺从本脏经取无属性真元，炼成金行真元送回本脏经；炼化有损耗，站定才能练。" }
+  presentation { icon_id: "meridian_evoker:refine_lung" display_name: "肺炼" description: "呬字诀吐纳六遍，两肺从本脏经取无属性真元，炼成金行真元送回本脏经；炼化有损耗，站定才能练。" }
 }
 definitions {
   id: "meridian_evoker:refine_spleen"
@@ -862,7 +862,7 @@ definitions {
     minimum_qi_ratio { value: 0 unit: RATIO }
     category_weight { value: 0 unit: RATIO }
   }
-  presentation { display_name: "脾炼" description: "呼字诀吐纳六遍，脾从本脏经取无属性真元，炼成土行真元送回本脏经；炼化有损耗，站定才能练。" }
+  presentation { icon_id: "meridian_evoker:refine_spleen" display_name: "脾炼" description: "呼字诀吐纳六遍，脾从本脏经取无属性真元，炼成土行真元送回本脏经；炼化有损耗，站定才能练。" }
 }
 definitions {
   id: "meridian_evoker:refine_heart"
@@ -1042,7 +1042,7 @@ definitions {
     minimum_qi_ratio { value: 0 unit: RATIO }
     category_weight { value: 0 unit: RATIO }
   }
-  presentation { display_name: "心炼" description: "呵字诀吐纳六遍，心从本脏经取无属性真元，炼成火行真元送回本脏经；炼化有损耗，站定才能练。" }
+  presentation { icon_id: "meridian_evoker:refine_heart" display_name: "心炼" description: "呵字诀吐纳六遍，心从本脏经取无属性真元，炼成火行真元送回本脏经；炼化有损耗，站定才能练。" }
 }
 definitions {
   id: "meridian_evoker:refine_kidney"
@@ -1222,7 +1222,7 @@ definitions {
     minimum_qi_ratio { value: 0 unit: RATIO }
     category_weight { value: 0 unit: RATIO }
   }
-  presentation { display_name: "肾炼" description: "吹字诀吐纳六遍，两肾从本脏经取无属性真元，炼成水行真元送回本脏经；炼化有损耗，站定才能练。" }
+  presentation { icon_id: "meridian_evoker:refine_kidney" display_name: "肾炼" description: "吹字诀吐纳六遍，两肾从本脏经取无属性真元，炼成水行真元送回本脏经；炼化有损耗，站定才能练。" }
 }
 definitions {
   id: "meridian_evoker:refine_liver"
@@ -1402,5 +1402,5 @@ definitions {
     minimum_qi_ratio { value: 0 unit: RATIO }
     category_weight { value: 0 unit: RATIO }
   }
-  presentation { display_name: "肝炼" description: "嘘字诀吐纳六遍，肝从本脏经取无属性真元，炼成木行真元送回本脏经；炼化有损耗，站定才能练。" }
+  presentation { icon_id: "meridian_evoker:refine_liver" display_name: "肝炼" description: "嘘字诀吐纳六遍，肝从本脏经取无属性真元，炼成木行真元送回本脏经；炼化有损耗，站定才能练。" }
 }
