@@ -1,6 +1,6 @@
 plugins { alias(libs.plugins.fabric.loom) }
 
-description = '五脏诀上手的真实客户端走查：新世界里拿卷、学卷、被拒、肺炼、金臂、看状态提示、改境界试火行，每步截图。'
+description = '五脏诀上手的真实客户端走查：新世界里拿卷、学卷、被拒、肺炼、金臂、看状态提示、改境界后吐纳试火行，每步截图。'
 
 dependencies {
     // 26.x 不混淆：直接用官方名编译，模组依赖也不经重映射。
@@ -9,6 +9,13 @@ dependencies {
     implementation libs.fabric.api
     // 正式数据包按安装 JAR 装入，和 GameTest 一样验证发行包自己的资源。
     localRuntime files(rootProject.project(':fabric').tasks.named('jar'))
+    // 走查要点吐纳窗口里的真实按钮：窗口、组件、修炼授权与吐纳视图的类型取 UI、Inventory UI、Progression 已构建的 JAR
+    // 和组合进来的 Framework 编译，运行仍由完整装配装入一次。
+    compileOnly libs.owo
+    compileOnly files(kizunaWorkspace.artifact('ui', 'client', false),
+            kizunaWorkspace.artifact('inventory-ui', '', false),
+            kizunaWorkspace.artifact('progression', 'client', false))
+    compileOnly 'local.meridian:server'
 }
 
 apply from: new File(kizunaWorkspace.directory('framework'), 'scripts/full-assembly.gradle')
