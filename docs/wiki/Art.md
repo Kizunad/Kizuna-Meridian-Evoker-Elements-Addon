@@ -4,6 +4,8 @@
 「卷轴 meridian_evoker:nourish_scroll 缺少贴图，使用功法库通用卷轴图标」，战斗 UI 也因目录没有
 `presentation.icon_id` 而不显示图标。
 
+2026-11-12 补中卷「附」的卷轴物品图、阅读背景和五式战斗图标，来源和后处理与上卷相同。
+
 ## 来源
 
 - 全部主体由用户 srv 上的 CPA 生成：模型 `gpt-image-2.5-sunburst`，图片接口，`quality=high`、PNG、`style=none`。
@@ -23,17 +25,20 @@
 | 卷 | 32×32 卷轴物品图 | 1536×1024 阅读背景 | 提示词 |
 |---|---|---|---|
 | 上卷「养」 | [nourish_scroll.png](../../fabric/src/main/resources/assets/meridian_evoker/textures/item/nourish_scroll.png) | [nourish.png](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/scroll/nourish.png) | [卷轴](art-prompts/nourish_scroll_icon_prompt.txt)、[背景](art-prompts/nourish_background_prompt.txt) |
+| 中卷「附」 | [infuse_scroll.png](../../fabric/src/main/resources/assets/meridian_evoker/textures/item/infuse_scroll.png) | [infuse.png](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/scroll/infuse.png) | [卷轴](art-prompts/infuse_scroll_icon_prompt.txt)、[背景](art-prompts/infuse_background_prompt.txt) |
 
 - 卷轴：象牙纸卷，两端淡玉轴头，五色（青、赤、黄、白、黑）编绳与流苏，和其他书的木轴、铁箍卷轴区分开。
 - 背景：两侧淡玉卷轴杆，上下沿五色细绳；四边留白处是五禽（鹤、熊、猿、鹿、虎）剪影，配本行颜色的云纹。中间 x 18%–82%、y 12%–88% 是浅色纸面，给正文用。
+- 中卷卷轴：比上卷更长更细的象牙纸卷，淡玉轴头，两道五色编绳，挂一枚玉璧坠，不带流苏，和上卷一眼分开。
+- 中卷背景：装帧与上卷相同（淡玉卷轴杆、五色细绳）。两侧留白处从上到下画本卷五行纹样：金是剑形寒光配金屑，土是裂地，火是火苗，水是浪头配霜花，木是闪电配两片叶。正文区与上卷相同。
 
-十式共用一套边框：
+全书各式共用一套边框：
 
 - 墨黑外圈；
 - 淡玉绿内圈；
 - 深青灰底。
 
-各式靠主体剪影和五行色区分：强身五式画五禽，炼元五式画对应脏器配吐纳气流。
+各式靠主体剪影和五行色区分：强身五式画五禽，炼元五式画对应脏器配吐纳气流。中卷五式画施放手势，配本行附行的样子。
 
 | 式 | icon_id | 主体 | 32×32 | 64×64 | 提示词 |
 |---|---|---|---|---|---|
@@ -47,6 +52,11 @@
 | 心炼 | `meridian_evoker:refine_heart` | 心与盘旋气流，朱红 | [PNG](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/technique/refine_heart.png) | [PNG](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/technique/refine_heart_64.png) | [提示词](art-prompts/refine_heart_technique_icon_prompt.txt) |
 | 肾炼 | `meridian_evoker:refine_kidney` | 双肾与水滴，深蓝 | [PNG](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/technique/refine_kidney.png) | [PNG](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/technique/refine_kidney_64.png) | [提示词](art-prompts/refine_kidney_technique_icon_prompt.txt) |
 | 肝炼 | `meridian_evoker:refine_liver` | 肝与新芽，叶绿 | [PNG](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/technique/refine_liver.png) | [PNG](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/technique/refine_liver_64.png) | [提示词](art-prompts/refine_liver_technique_icon_prompt.txt) |
+| 锐金 | `meridian_evoker:metal_edge` | 竖起剑指，指尖上冲一道剑形寒光，银白 | [PNG](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/technique/metal_edge.png) | [PNG](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/technique/metal_edge_64.png) | [提示词](art-prompts/metal_edge_technique_icon_prompt.txt) |
+| 震土 | `meridian_evoker:earth_quake` | 双掌下按、一足顿地，地面裂纹，赭黄 | [PNG](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/technique/earth_quake.png) | [PNG](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/technique/earth_quake_64.png) | [提示词](art-prompts/earth_quake_technique_icon_prompt.txt) |
+| 灼火 | `meridian_evoker:fire_burn` | 双掌相搓，掌间火苗与火星，朱红 | [PNG](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/technique/fire_burn.png) | [PNG](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/technique/fire_burn_64.png) | [提示词](art-prompts/fire_burn_technique_icon_prompt.txt) |
+| 寒水 | `meridian_evoker:water_frost` | 双掌下按，掌下浪头压平结霜，深蓝 | [PNG](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/technique/water_frost.png) | [PNG](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/technique/water_frost_64.png) | [提示词](art-prompts/water_frost_technique_icon_prompt.txt) |
+| 惊雷 | `meridian_evoker:wood_thunder` | 双掌相击，掌下闪电与落叶，叶绿配黄绿 | [PNG](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/technique/wood_thunder.png) | [PNG](../../fabric/src/main/resources/assets/meridian_evoker/textures/gui/technique/wood_thunder_64.png) | [提示词](art-prompts/wood_thunder_technique_icon_prompt.txt) |
 
 ## 后处理
 
@@ -69,7 +79,8 @@
 2. 用 `handoff/art-20261111/art/run_cpa.sh <新版本> evoker:<名字>:<icon|scroll|background>` 出原稿；
 3. 再跑 `python3 scripts/process_art.py v1 <种类>/<名字>=<新版本>`，只换这一张。
 
-当前成品全部来自 v1 原稿，复现命令是 `python3 scripts/process_art.py v1`；换过某张后把新参数更新在这里。
+锐金图标用 v2 原稿：v1 画成一手横托、一手抹过刀光，主体偏左，缩到 32×32 后刀光看不出来；v2 改成居中竖起的剑指。
+其余全部来自 v1 原稿。复现命令是 `python3 scripts/process_art.py v1 icon/metal_edge=v2`；换过某张后把新参数更新在这里。
 
 ## 校验
 

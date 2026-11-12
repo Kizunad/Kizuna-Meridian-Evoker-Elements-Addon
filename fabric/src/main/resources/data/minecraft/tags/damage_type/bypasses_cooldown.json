@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "meridian_evoker:metal",
+    "meridian_evoker:earth",
+    "meridian_evoker:fire",
+    "meridian_evoker:water",
+    "meridian_evoker:wood"
+  ]
+}

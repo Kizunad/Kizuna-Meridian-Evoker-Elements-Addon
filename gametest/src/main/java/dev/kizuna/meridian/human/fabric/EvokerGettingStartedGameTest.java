@@ -21,7 +21,7 @@ import org.slf4j.Logger;
  * 收势后 1 s 放强身被拒「没有余力」，歇到第 8 s 能放。心、肾只有气态配方：真炁以后吐纳直接出气态真元，
  * 只开自动吐纳四分钟就炼得出火、水行，三分钟时火行只比心火所需多一成上下；用 qi set 补气态真元是不等吐纳的快路径。生存路径不清空经脉：
  * 游炁吐纳攒下的游离态留在各脉，中焦突破后接着开自动周天把它炼成气态，同时真炁吐纳；心经几分钟就够，
- * 肾经离肺经最远，实测十六到二十分钟才够归水，这里吐纳二十二分钟。
+ * 肾经离肺经最远，吐纳二十二分钟时六次实测肾炼出水行 0.28–0.47，有一次不够归水的 0.3，这里吐纳二十六分钟。
  */
 public final class EvokerGettingStartedGameTest {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -55,7 +55,7 @@ public final class EvokerGettingStartedGameTest {
     private static final int CIRCUIT_TICKS = WANDERING_TICKS + 3 * MINUTE;
     private static final int LAUNCH_DEADLINE_TICKS = CIRCUIT_TICKS + 20 * SECOND;
     private static final int TRUE_QI_TICKS = CIRCUIT_TICKS + 90 * SECOND;
-    private static final int TRUE_BREATHING_TICKS = 22 * MINUTE;
+    private static final int TRUE_BREATHING_TICKS = 26 * MINUTE;
     private static final int LOG_INTERVAL_TICKS = MINUTE;
     private static final int HEART_TICKS = TRUE_QI_TICKS + TRUE_BREATHING_TICKS;
     private static final int FIRE_TICKS = HEART_TICKS + RESTED_TICKS;
@@ -197,7 +197,7 @@ public final class EvokerGettingStartedGameTest {
     @GameTest(maxTicks = SURVIVAL_TIMEOUT)
     public void survivalPathRefinesFireAndWaterWithoutClearingMeridians(GameTestHelper context) {
         // 新角色开脉后游炁自动吐纳十二分钟，游离态攒满各脉；关窗歇三分钟等脑耐力回满，开中焦自动周天、突破真炁。
-        // 突破后周天不停，把八脉里的游离态炼成气态，同时真炁吐纳二十二分钟；然后停周天，心炼放心火、肾炼放归水都要成功。
+        // 突破后周天不停，把八脉里的游离态炼成气态，同时真炁吐纳二十六分钟；然后停周天，心炼放心火、肾炼放归水都要成功。
         // 只用调试命令开脉、放候选与外壁燃料，不清空经脉。
         EvokerTestPlayer.unopened(context, fixture -> {
             run(context, fixture, OPEN_ALL);

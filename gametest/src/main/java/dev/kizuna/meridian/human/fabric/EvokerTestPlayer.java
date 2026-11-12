@@ -35,6 +35,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.protocol.common.ClientboundKeepAlivePacket;
 import net.minecraft.network.protocol.common.ServerboundKeepAlivePacket;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
+import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
@@ -55,6 +56,7 @@ import java.util.stream.Stream;
 final class EvokerTestPlayer implements AutoCloseable {
     static final String PREFIX = "meridian_evoker:";
     static final String VOLUME = PREFIX + "nourish";
+    static final String INFUSE_VOLUME = PREFIX + "infuse";
     static final double FREE_DENSITY = 0.01;
     static final double GAS_DENSITY = 0.1;
     static final double LIQUID_DENSITY = 1;
@@ -64,6 +66,8 @@ final class EvokerTestPlayer implements AutoCloseable {
     private static final int LOGIN_TICKS = 3;
     private static final int PROTOCOL_VERSION = 1;
     private static final String DAMAGE_SOURCE = "meridian_evoker_test:organ";
+    private static final String LETHAL_PART = "chest";
+    private static final float LETHAL_HP = 1_000_000;
     private static final List<String> SIDES = List.of("left", "right");
     private static final List<Identifier> CHANNELS = List.of(
             Identifier.parse("meridian:body_view"),
@@ -111,6 +115,22 @@ final class EvokerTestPlayer implements AutoCloseable {
 
     static void ready(GameTestHelper context, int count, Consumer<List<EvokerTestPlayer>> action) {
         // 多人用例按列排开，声音包可以按位置区分施放者；用例结束一律真实断线。
+        prepared(context, count, List.of(VOLUME), action);
+    }
+
+    static void readyInfuse(GameTestHelper context, int count, Consumer<List<EvokerTestPlayer>> action) {
+        // 中卷用例：先学会上卷再学中卷，前置卷校验走正式入口。
+        prepared(context, count, List.of(VOLUME, INFUSE_VOLUME), action);
+    }
+
+    static void unlearned(GameTestHelper context, Consumer<EvokerTestPlayer> action) {
+        // 开脉、清空真元，但一卷都没学，用来看前置卷的拒绝。
+        prepared(context, 1, List.of(), players -> action.accept(players.getFirst()));
+    }
+
+    private static void prepared(GameTestHelper context, int count, List<String> volumes,
+                                 Consumer<List<EvokerTestPlayer>> action) {
+        // 登录几 tick 后开通全身经脉、清空真元，按顺序学会给定的卷。
         initializeTicks();
         var players = new ArrayList<EvokerTestPlayer>();
         for (int lane = 0; lane < count; lane++) {
@@ -121,7 +141,7 @@ final class EvokerTestPlayer implements AutoCloseable {
             for (EvokerTestPlayer fixture : players) {
                 fixture.openAllMeridians();
                 fixture.fillEvenly(0, FREE_DENSITY);
-                TechniqueFabric.service().learn(fixture.player.getUUID(), VOLUME);
+                volumes.forEach(volume -> TechniqueFabric.service().learn(fixture.player.getUUID(), volume));
             }
             action.accept(players);
         }));
@@ -297,16 +317,34 @@ final class EvokerTestPlayer implements AutoCloseable {
                 .findFirst()
                 .orElseThrow()
                 .maxHp();
+        damageBody(HealthTarget.newBuilder().setOrganId(organId).build(), maximumHp, organId);
+    }
+
+    void kill() {
+        // 可信躯干大伤害经人体蔓延耗尽全身，再走原版死亡：死前回调里功法库取消施放、清掉死体的附行。
+        damageBody(HealthTarget.newBuilder().setPartId(LETHAL_PART).build(), LETHAL_HP, LETHAL_PART);
+        player.hurtServer(player.level(), player.damageSources().genericKill(), LETHAL_HP);
+    }
+
+    ServerPlayer respawn() {
+        // 照 Human 复活用例发客户端重生指令；26.2 直接调玩家管理器重生会让新玩家一直无敌。
+        // 身体按 UUID 沿用；本夹具的 player 仍指着旧实体，重生后的操作用返回的新实体。
+        var command = new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.PERFORM_RESPAWN);
+        player.connection.handleClientCommand(command);
+        ServerPlayer revived = player.level().getServer().getPlayerList().getPlayer(player.getUUID());
+        revived.setNoGravity(true /* noGravity */);
+        return revived;
+    }
+
+    private void damageBody(HealthTarget hit, double damageHp, String target) {
+        // 可信健康协议按当前修订号提交一次 CUSTOM 伤害，失败直接报出目标。
         var inspected = exchange(health(UUID.randomUUID().toString()).setInspect(true /* inspect */).build());
-        var hit = HealthTarget.newBuilder()
-                .setOrganId(organId)
-                .build();
         var damage = DamageBody.newBuilder()
                 .setSourceId(DAMAGE_SOURCE)
                 .setDamageType(DAMAGE_SOURCE)
                 .setKind(DamageKind.CUSTOM)
                 .setHit(hit)
-                .setDamageHp(maximumHp)
+                .setDamageHp(damageHp)
                 .build();
         var command = BodyCommand.newBuilder()
                 .setBodyId(inspected.getBody().getId())
@@ -321,7 +359,7 @@ final class EvokerTestPlayer implements AutoCloseable {
                 .build();
         var response = exchange(health(requestId).setEffect(effect).build());
         if (!response.hasBody()) {
-            throw new IllegalStateException("测试打坏器官失败：" + organId + " " + response);
+            throw new IllegalStateException("测试伤害提交失败：" + target + " " + response);
         }
     }
 

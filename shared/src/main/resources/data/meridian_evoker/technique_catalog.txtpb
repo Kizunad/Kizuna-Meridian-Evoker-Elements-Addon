@@ -1,4 +1,4 @@
-# 五脏诀唯一功法目录：上卷「养」，强身五式与炼元五式（数值全部占位，见 docs/wiki/Integration.md）。
+# 五脏诀唯一功法目录：上卷「养」强身五式与炼元五式，中卷「附」五行附伤五式（数值全部占位，见 docs/wiki/Integration.md）。
 schema_version: 1
 namespace: "meridian_evoker"
 binding_templates { id: "human:adult" version: 1 }
@@ -18,6 +18,20 @@ volumes {
   techniques { id: "meridian_evoker:refine_kidney" version: 1 }
   techniques { id: "meridian_evoker:refine_liver" version: 1 }
   # 生存来源：玩家杀死会《养》的唤魔者（Threatening 学卷表的游炁、真炁两档）时掉一卷，概率占位。
+  scroll_drops { entity_type: "minecraft:evoker" chance: 0.25 }
+}
+volumes {
+  id: "meridian_evoker:infuse"
+  book_id: "meridian_evoker:five_organs"
+  display_name: "附"
+  techniques { id: "meridian_evoker:metal_edge" version: 1 }
+  techniques { id: "meridian_evoker:earth_quake" version: 1 }
+  techniques { id: "meridian_evoker:fire_burn" version: 1 }
+  techniques { id: "meridian_evoker:water_frost" version: 1 }
+  techniques { id: "meridian_evoker:wood_thunder" version: 1 }
+  # 先学会《养》全部十式才能学《附》。
+  prerequisite_volume_ids: "meridian_evoker:nourish"
+  # 生存来源同《养》：玩家杀死会这一卷的唤魔者时掉一卷，概率占位；C6c 之前没有唤魔者学《附》。
   scroll_drops { entity_type: "minecraft:evoker" chance: 0.25 }
 }
 definitions {
@@ -1405,4 +1419,522 @@ definitions {
     category_weight { value: 0 unit: RATIO }
   }
   presentation { icon_id: "meridian_evoker:refine_liver" display_name: "肝炼" description: "嘘字诀吐纳六遍，肝从本脏经取无属性真元，炼成木行真元送回本脏经；炼化有损耗，站定才能练。" }
+}
+definitions {
+  id: "meridian_evoker:metal_edge"
+  version: 1
+  category: BUFF
+  minimum_realm: TRUE_QI
+  movement_speed_multiplier: 0.4
+  slots {
+    id: "zang"
+    module: ORGAN
+    tags: "human:zang_metal"
+    minimum_count: 1
+    maximum_count: 2
+  }
+  slots {
+    id: "channels"
+    module: MERIDIAN
+    tags: "human:meridian_metal"
+    minimum_count: 1
+    maximum_count: 4
+    require_opened: true
+  }
+  cost {
+    qi {
+      slot_id: "channels"
+      attribute: "meridian:metal"
+      phase: GAS
+      matching: ATTRIBUTE_AT_LEAST_PHASE
+      amount { value: 0.6 unit: QI }
+      distribution: BY_BALANCE
+    }
+    work {
+      slot_id: "zang"
+      power { value: 12 unit: WATT }
+      duration { value: 2 unit: SECOND }
+    }
+  }
+  phases {
+    warmup_millis: 2000
+    active_millis: 0
+    recovery_millis: 1500
+    interruptible_by_damage: true
+  }
+  cooldown_millis: 17000
+  effects {
+    at_millis: 0
+    sound { sound_id: "meridian_evoker:infuse.raise"
+      volume { value: 0.5 unit: RATIO }
+      pitch { value: 1.2 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 1100
+    sound { sound_id: "meridian_evoker:metal_edge.wipe"
+      volume { value: 0.5 unit: RATIO }
+      pitch { value: 1.6 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 2000
+    elemental_infusion {
+      attribute: "meridian:metal"
+      damage_type_id: "meridian_evoker:metal"
+      ratio { value: 0.25 unit: RATIO }
+      curve { offset_millis: 0 value: 0 }
+      curve { offset_millis: 500 value: 1 }
+      curve { offset_millis: 15000 value: 1 }
+      curve { offset_millis: 18000 value: 0 }
+      counters { target_attribute: "meridian:wood"
+        damage_multiplier { value: 1.5 unit: RATIO }
+        sound_volume_multiplier { value: 1.5 unit: RATIO } }
+      counters { target_attribute: "meridian:fire"
+        damage_multiplier { value: 0.5 unit: RATIO }
+        sound_volume_multiplier { value: 0.6 unit: RATIO }
+        sound_pitch_offset { value: 0.2 unit: RATIO } }
+      hit_sound { sound_id: "meridian_evoker:hit.metal"
+        volume { value: 0.5 unit: RATIO }
+        pitch { value: 1.6 unit: RATIO }
+        anchor: TARGET }
+    }
+  }
+  effects {
+    at_millis: 2000
+    sound { sound_id: "meridian_evoker:metal_edge.cast"
+      volume { value: 0.3 unit: RATIO }
+      pitch { value: 2.0 unit: RATIO }
+      anchor: CASTER }
+  }
+  ai_hints {
+    minimum_distance { value: 0 unit: METER }
+    maximum_distance { value: 1024 unit: METER }
+    maximum_hp_ratio { value: 1 unit: RATIO }
+    minimum_qi_ratio { value: 0 unit: RATIO }
+    category_weight { value: 0 unit: RATIO }
+  }
+  presentation { icon_id: "meridian_evoker:metal_edge" display_name: "锐金" description: "剑指抹锋，肺金之气附上拳脚兵刃；此后每一击另带一记切割。" }
+}
+definitions {
+  id: "meridian_evoker:earth_quake"
+  version: 1
+  category: BUFF
+  minimum_realm: TRUE_QI
+  movement_speed_multiplier: 0.4
+  slots {
+    id: "zang"
+    module: ORGAN
+    tags: "human:zang_earth"
+    minimum_count: 1
+    maximum_count: 1
+  }
+  slots {
+    id: "channels"
+    module: MERIDIAN
+    tags: "human:meridian_earth"
+    minimum_count: 1
+    maximum_count: 4
+    require_opened: true
+  }
+  cost {
+    qi {
+      slot_id: "channels"
+      attribute: "meridian:earth"
+      phase: GAS
+      matching: ATTRIBUTE_AT_LEAST_PHASE
+      amount { value: 0.6 unit: QI }
+      distribution: BY_BALANCE
+    }
+    work {
+      slot_id: "zang"
+      power { value: 16 unit: WATT }
+      duration { value: 2 unit: SECOND }
+    }
+  }
+  phases {
+    warmup_millis: 2000
+    active_millis: 0
+    recovery_millis: 1500
+    interruptible_by_damage: true
+  }
+  cooldown_millis: 17000
+  effects {
+    at_millis: 0
+    sound { sound_id: "meridian_evoker:infuse.raise"
+      volume { value: 0.5 unit: RATIO }
+      pitch { value: 1.2 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 1950
+    sound { sound_id: "meridian_evoker:earth_quake.stomp"
+      volume { value: 1.0 unit: RATIO }
+      pitch { value: 0.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 2000
+    elemental_infusion {
+      attribute: "meridian:earth"
+      damage_type_id: "meridian_evoker:earth"
+      ratio { value: 0.25 unit: RATIO }
+      curve { offset_millis: 0 value: 0 }
+      curve { offset_millis: 500 value: 1 }
+      curve { offset_millis: 15000 value: 1 }
+      curve { offset_millis: 18000 value: 0 }
+      extra_knockback { value: 0.3 unit: RATIO }
+      counters { target_attribute: "meridian:water"
+        damage_multiplier { value: 1.5 unit: RATIO }
+        sound_volume_multiplier { value: 1.5 unit: RATIO } }
+      counters { target_attribute: "meridian:wood"
+        damage_multiplier { value: 0.5 unit: RATIO }
+        sound_volume_multiplier { value: 0.6 unit: RATIO }
+        sound_pitch_offset { value: 0.2 unit: RATIO } }
+      hit_sound { sound_id: "meridian_evoker:hit.earth"
+        volume { value: 0.6 unit: RATIO }
+        pitch { value: 0.8 unit: RATIO }
+        anchor: TARGET }
+    }
+  }
+  effects {
+    at_millis: 2000
+    sound { sound_id: "meridian_evoker:earth_quake.cast"
+      volume { value: 0.8 unit: RATIO }
+      pitch { value: 0.7 unit: RATIO }
+      anchor: CASTER }
+  }
+  ai_hints {
+    minimum_distance { value: 0 unit: METER }
+    maximum_distance { value: 1024 unit: METER }
+    maximum_hp_ratio { value: 1 unit: RATIO }
+    minimum_qi_ratio { value: 0 unit: RATIO }
+    category_weight { value: 0 unit: RATIO }
+  }
+  presentation { icon_id: "meridian_evoker:earth_quake" display_name: "震土" description: "提膝震脚，脾土之气沉入拳脚；此后每一击另带一记钝击，并把目标多推开一些。" }
+}
+definitions {
+  id: "meridian_evoker:fire_burn"
+  version: 1
+  category: BUFF
+  minimum_realm: TRUE_QI
+  movement_speed_multiplier: 0.4
+  slots {
+    id: "zang"
+    module: ORGAN
+    tags: "human:zang_fire"
+    minimum_count: 1
+    maximum_count: 1
+  }
+  slots {
+    id: "channels"
+    module: MERIDIAN
+    tags: "human:meridian_fire"
+    minimum_count: 1
+    maximum_count: 4
+    require_opened: true
+  }
+  cost {
+    qi {
+      slot_id: "channels"
+      attribute: "meridian:fire"
+      phase: GAS
+      matching: ATTRIBUTE_AT_LEAST_PHASE
+      amount { value: 0.6 unit: QI }
+      distribution: BY_BALANCE
+    }
+    work {
+      slot_id: "zang"
+      power { value: 25 unit: WATT }
+      duration { value: 1.5 unit: SECOND }
+    }
+  }
+  phases {
+    warmup_millis: 2000
+    active_millis: 0
+    recovery_millis: 1500
+    interruptible_by_damage: true
+  }
+  cooldown_millis: 17000
+  effects {
+    at_millis: 0
+    sound { sound_id: "meridian_evoker:infuse.raise"
+      volume { value: 0.5 unit: RATIO }
+      pitch { value: 1.2 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 700
+    sound { sound_id: "meridian_evoker:fire_burn.rub"
+      volume { value: 0.5 unit: RATIO }
+      pitch { value: 1.0 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 1300
+    sound { sound_id: "meridian_evoker:fire_burn.blow"
+      volume { value: 0.6 unit: RATIO }
+      pitch { value: 1.3 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 1700
+    sound { sound_id: "meridian_evoker:fire_burn.spark"
+      volume { value: 0.6 unit: RATIO }
+      pitch { value: 1.0 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 2000
+    elemental_infusion {
+      attribute: "meridian:fire"
+      damage_type_id: "meridian_evoker:fire"
+      ratio { value: 0.25 unit: RATIO }
+      curve { offset_millis: 0 value: 0 }
+      curve { offset_millis: 500 value: 1 }
+      curve { offset_millis: 15000 value: 1 }
+      curve { offset_millis: 18000 value: 0 }
+      ignite_ticks: 20
+      counters { target_attribute: "meridian:metal"
+        damage_multiplier { value: 1.5 unit: RATIO }
+        sound_volume_multiplier { value: 1.5 unit: RATIO } }
+      counters { target_attribute: "meridian:water"
+        damage_multiplier { value: 0.5 unit: RATIO }
+        sound_volume_multiplier { value: 0.6 unit: RATIO }
+        sound_pitch_offset { value: 0.2 unit: RATIO } }
+      hit_sound { sound_id: "meridian_evoker:hit.fire"
+        volume { value: 0.5 unit: RATIO }
+        pitch { value: 1.0 unit: RATIO }
+        anchor: TARGET }
+    }
+  }
+  effects {
+    at_millis: 2000
+    sound { sound_id: "meridian_evoker:fire_burn.cast"
+      volume { value: 0.5 unit: RATIO }
+      pitch { value: 1.3 unit: RATIO }
+      anchor: CASTER }
+  }
+  ai_hints {
+    minimum_distance { value: 0 unit: METER }
+    maximum_distance { value: 1024 unit: METER }
+    maximum_hp_ratio { value: 1 unit: RATIO }
+    minimum_qi_ratio { value: 0 unit: RATIO }
+    category_weight { value: 0 unit: RATIO }
+  }
+  presentation { icon_id: "meridian_evoker:fire_burn" display_name: "灼火" description: "搓掌吹火，心火附上拳脚；此后每一击另带一记灼热，并点着目标。" }
+}
+definitions {
+  id: "meridian_evoker:water_frost"
+  version: 1
+  category: BUFF
+  minimum_realm: TRUE_QI
+  movement_speed_multiplier: 0.4
+  slots {
+    id: "zang"
+    module: ORGAN
+    tags: "human:zang_water"
+    minimum_count: 1
+    maximum_count: 2
+  }
+  slots {
+    id: "channels"
+    module: MERIDIAN
+    tags: "human:meridian_water"
+    minimum_count: 1
+    maximum_count: 4
+    require_opened: true
+  }
+  cost {
+    qi {
+      slot_id: "channels"
+      attribute: "meridian:water"
+      phase: GAS
+      matching: ATTRIBUTE_AT_LEAST_PHASE
+      amount { value: 0.6 unit: QI }
+      distribution: BY_BALANCE
+    }
+    work {
+      slot_id: "zang"
+      power { value: 12 unit: WATT }
+      duration { value: 2 unit: SECOND }
+    }
+  }
+  phases {
+    warmup_millis: 2000
+    active_millis: 0
+    recovery_millis: 1500
+    interruptible_by_damage: true
+  }
+  cooldown_millis: 17000
+  effects {
+    at_millis: 0
+    sound { sound_id: "meridian_evoker:infuse.raise"
+      volume { value: 0.5 unit: RATIO }
+      pitch { value: 1.2 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 700
+    sound { sound_id: "meridian_evoker:water_frost.press"
+      volume { value: 0.5 unit: RATIO }
+      pitch { value: 1.0 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 1000
+    sound { sound_id: "meridian_evoker:water_frost.press"
+      volume { value: 0.5 unit: RATIO }
+      pitch { value: 0.9 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 1350
+    sound { sound_id: "meridian_evoker:water_frost.press"
+      volume { value: 0.5 unit: RATIO }
+      pitch { value: 0.8 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 2000
+    elemental_infusion {
+      attribute: "meridian:water"
+      damage_type_id: "meridian_evoker:water"
+      ratio { value: 0.25 unit: RATIO }
+      curve { offset_millis: 0 value: 0 }
+      curve { offset_millis: 500 value: 1 }
+      curve { offset_millis: 15000 value: 1 }
+      curve { offset_millis: 18000 value: 0 }
+      freeze_ticks: 50
+      counters { target_attribute: "meridian:fire"
+        damage_multiplier { value: 1.5 unit: RATIO }
+        sound_volume_multiplier { value: 1.5 unit: RATIO } }
+      counters { target_attribute: "meridian:earth"
+        damage_multiplier { value: 0.5 unit: RATIO }
+        sound_volume_multiplier { value: 0.6 unit: RATIO }
+        sound_pitch_offset { value: 0.2 unit: RATIO } }
+      hit_sound { sound_id: "meridian_evoker:hit.water"
+        volume { value: 0.5 unit: RATIO }
+        pitch { value: 1.0 unit: RATIO }
+        anchor: TARGET }
+    }
+  }
+  effects {
+    at_millis: 2000
+    sound { sound_id: "meridian_evoker:water_frost.cast"
+      volume { value: 0.5 unit: RATIO }
+      pitch { value: 1.5 unit: RATIO }
+      anchor: CASTER }
+  }
+  ai_hints {
+    minimum_distance { value: 0 unit: METER }
+    maximum_distance { value: 1024 unit: METER }
+    maximum_hp_ratio { value: 1 unit: RATIO }
+    minimum_qi_ratio { value: 0 unit: RATIO }
+    category_weight { value: 0 unit: RATIO }
+  }
+  presentation { icon_id: "meridian_evoker:water_frost" display_name: "寒水" description: "交替按浪，肾水寒气附上拳脚；此后每一击另带一记寒冷，并让目标结霜。" }
+}
+definitions {
+  id: "meridian_evoker:wood_thunder"
+  version: 1
+  category: BUFF
+  minimum_realm: ESSENCE_TRANSFORMATION
+  movement_speed_multiplier: 0.4
+  slots {
+    id: "zang"
+    module: ORGAN
+    tags: "human:zang_wood"
+    minimum_count: 1
+    maximum_count: 1
+  }
+  slots {
+    id: "channels"
+    module: MERIDIAN
+    tags: "human:meridian_wood"
+    minimum_count: 1
+    maximum_count: 4
+    require_opened: true
+  }
+  cost {
+    qi {
+      slot_id: "channels"
+      attribute: "meridian:wood"
+      phase: GAS
+      matching: ATTRIBUTE_AT_LEAST_PHASE
+      amount { value: 0.6 unit: QI }
+      distribution: BY_BALANCE
+    }
+    work {
+      slot_id: "zang"
+      power { value: 16 unit: WATT }
+      duration { value: 2 unit: SECOND }
+    }
+  }
+  phases {
+    warmup_millis: 2000
+    active_millis: 0
+    recovery_millis: 1500
+    interruptible_by_damage: true
+  }
+  cooldown_millis: 17000
+  effects {
+    at_millis: 0
+    sound { sound_id: "meridian_evoker:infuse.raise"
+      volume { value: 0.5 unit: RATIO }
+      pitch { value: 1.2 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 1400
+    sound { sound_id: "meridian_evoker:wood_thunder.clap"
+      volume { value: 0.8 unit: RATIO }
+      pitch { value: 1.0 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 1400
+    sound { sound_id: "meridian_evoker:wood_thunder.clap_spark"
+      volume { value: 0.2 unit: RATIO }
+      pitch { value: 2.0 unit: RATIO }
+      anchor: CASTER }
+  }
+  effects {
+    at_millis: 2000
+    elemental_infusion {
+      attribute: "meridian:wood"
+      damage_type_id: "meridian_evoker:wood"
+      ratio { value: 0.25 unit: RATIO }
+      curve { offset_millis: 0 value: 0 }
+      curve { offset_millis: 500 value: 1 }
+      curve { offset_millis: 15000 value: 1 }
+      curve { offset_millis: 18000 value: 0 }
+      counters { target_attribute: "meridian:earth"
+        damage_multiplier { value: 1.5 unit: RATIO }
+        sound_volume_multiplier { value: 1.5 unit: RATIO } }
+      counters { target_attribute: "meridian:metal"
+        damage_multiplier { value: 0.5 unit: RATIO }
+        sound_volume_multiplier { value: 0.6 unit: RATIO }
+        sound_pitch_offset { value: 0.2 unit: RATIO } }
+      hit_sound { sound_id: "meridian_evoker:hit.wood"
+        volume { value: 0.2 unit: RATIO }
+        pitch { value: 2.0 unit: RATIO }
+        anchor: TARGET }
+    }
+  }
+  effects {
+    at_millis: 2000
+    sound { sound_id: "meridian_evoker:wood_thunder.cast"
+      volume { value: 0.2 unit: RATIO }
+      pitch { value: 1.6 unit: RATIO }
+      anchor: CASTER }
+  }
+  ai_hints {
+    minimum_distance { value: 0 unit: METER }
+    maximum_distance { value: 1024 unit: METER }
+    maximum_hp_ratio { value: 1 unit: RATIO }
+    minimum_qi_ratio { value: 0 unit: RATIO }
+    category_weight { value: 0 unit: RATIO }
+  }
+  presentation { icon_id: "meridian_evoker:wood_thunder" display_name: "惊雷" description: "击掌引雷，肝木之气化作电弧附上拳脚；此后每一击另带一记电击。" }
 }

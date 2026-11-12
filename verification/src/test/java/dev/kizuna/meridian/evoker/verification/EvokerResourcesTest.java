@@ -3,6 +3,7 @@ package dev.kizuna.meridian.evoker.verification;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.ElementalInfusion;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.TechniqueCatalog;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.TechniqueDefinition;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.TechniqueEffect;
@@ -15,6 +16,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Stream;
@@ -24,7 +27,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-/** 正式包的声音、字幕、语言、状态图标、卷轴美术与功法图标逐项对上目录，且不带任何 Java 入口。 */
+/** 正式包的声音、字幕、语言、状态图标、卷轴美术、功法图标与附伤伤害类型逐项对上目录，且不带任何 Java 入口。 */
 public final class EvokerResourcesTest {
     private static final String ASSETS = "assets/" + EvokerContent.NAMESPACE + "/";
     private static final String PREFIX = EvokerContent.NAMESPACE + ":";
@@ -35,6 +38,13 @@ public final class EvokerResourcesTest {
     private static final int BACKGROUND_HEIGHT = 1024;
     private static final int TECHNIQUE_ICON_PIXELS = 32;
     private static final int LARGE_TECHNIQUE_ICON_PIXELS = 64;
+    /** 附伤伤害类型按行进 Damage 的伤害种类标签：金切割、土钝击、火灼热、水寒冷、木雷电。 */
+    private static final Map<String, String> INFUSION_KINDS = Map.of(
+            "metal", "cutting", "earth", "blunt", "fire", "heat", "water", "cold", "wood", "electric");
+    /** 附伤不再击退（追加击退由附行自己给），也不受主击刚留下的无敌帧拦截。 */
+    private static final List<String> INFUSION_VANILLA_TAGS = List.of("no_knockback", "bypasses_cooldown");
+    /** 用户定：附伤不进原版着火、冻伤标签，免得防火药水、皮革靴之类的原版免疫把附伤整条免掉。 */
+    private static final List<String> INFUSION_EXCLUDED_TAGS = List.of("is_fire", "is_freezing");
 
     @Test
     public void everyCatalogSoundResolvesWithSubtitles() throws IOException {
@@ -106,6 +116,25 @@ public final class EvokerResourcesTest {
     }
 
     @Test
+    public void infusionDamageTypesAreRegisteredAndTagged() throws IOException {
+        // 每条附行的伤害类型在本仓注册，进本行的伤害种类标签和原版两条标签，不进原版着火、冻伤标签。
+        Set<String> types = infusionDamageTypes(EvokerContent.catalog());
+        assertEquals(INFUSION_KINDS.keySet(), types);
+        for (String path : types) {
+            String type = PREFIX + path;
+            JsonObject registration = json("data/" + EvokerContent.NAMESPACE + "/damage_type/" + path + ".json");
+            assertTrue(type, registration.has("message_id"));
+            assertTrue(type, tagValues("meridian", "kind/" + INFUSION_KINDS.get(path)).contains(type));
+            for (String tag : INFUSION_VANILLA_TAGS) {
+                assertTrue(tag + " 缺少 " + type, tagValues("minecraft", tag).contains(type));
+            }
+            for (String tag : INFUSION_EXCLUDED_TAGS) {
+                assertFalse(tag + " 含有 " + type, tagValues("minecraft", tag).contains(type));
+            }
+        }
+    }
+
+    @Test
     public void fabricPackageIsPureData() throws IOException {
         // 正式包没有入口、混入或 Java 源；功法目录路径与 shared 的唯一来源一致。
         JsonObject metadata = json("fabric.mod.json");
@@ -116,6 +145,7 @@ public final class EvokerResourcesTest {
         JsonObject depends = metadata.getAsJsonObject("depends");
         assertTrue(depends.has("meridian_technique"));
         assertTrue(depends.has("meridian_human_host"));
+        assertTrue(depends.has("meridian_vanilla_damage"));
         try (Stream<Path> files = Files.walk(EvokerContent.fabricResources().getParent())) {
             assertTrue(files.noneMatch(path -> path.toString().endsWith(".java")));
         }
@@ -154,19 +184,55 @@ public final class EvokerResourcesTest {
     }
 
     private static Set<String> soundEvents(TechniqueCatalog catalog) {
-        // 收集目录里全部声音效果的事件路径，只允许本仓命名空间。
+        // 收集目录里全部声音效果和附行命中声的事件路径，只允许本仓命名空间。
         var events = new TreeSet<String>();
         for (TechniqueDefinition definition : catalog.getDefinitionsList()) {
             for (TechniqueEffect effect : definition.getEffectsList()) {
-                if (!effect.hasSound()) {
-                    continue;
-                }
-                String id = effect.getSound().getSoundId();
-                assertTrue(id, id.startsWith(PREFIX));
-                events.add(id.substring(PREFIX.length()));
+                soundId(effect).ifPresent(id -> {
+                    assertTrue(id, id.startsWith(PREFIX));
+                    events.add(id.substring(PREFIX.length()));
+                });
             }
         }
         return events;
+    }
+
+    private static Optional<String> soundId(TechniqueEffect effect) {
+        // 声音效果带自己的事件；附行另带命中声，由 Damage 在目标处播。
+        if (effect.hasSound()) {
+            return Optional.of(effect.getSound().getSoundId());
+        }
+        if (effect.hasElementalInfusion() && effect.getElementalInfusion().hasHitSound()) {
+            return Optional.of(effect.getElementalInfusion().getHitSound().getSoundId());
+        }
+        return Optional.empty();
+    }
+
+    private static Set<String> infusionDamageTypes(TechniqueCatalog catalog) {
+        // 附行引用的伤害类型都在本仓命名空间，按路径收集。
+        var types = new TreeSet<String>();
+        catalog.getDefinitionsList().forEach(definition -> definition.getEffectsList().stream()
+                .filter(TechniqueEffect::hasElementalInfusion)
+                .map(TechniqueEffect::getElementalInfusion)
+                .map(ElementalInfusion::getDamageTypeId)
+                .forEach(id -> {
+                    assertTrue(id, id.startsWith(PREFIX));
+                    types.add(id.substring(PREFIX.length()));
+                }));
+        return types;
+    }
+
+    private static Set<String> tagValues(String namespace, String tag) throws IOException {
+        // 本包里的伤害类型标签；本包没有这个标签文件时为空。追加标签不能整条替换别包的内容。
+        Path file = resource("data/" + namespace + "/tags/damage_type/" + tag + ".json");
+        if (!Files.isRegularFile(file)) {
+            return Set.of();
+        }
+        JsonObject json = json("data/" + namespace + "/tags/damage_type/" + tag + ".json");
+        assertFalse(tag, json.has("replace") && json.get("replace").getAsBoolean());
+        var values = new TreeSet<String>();
+        json.getAsJsonArray("values").forEach(value -> values.add(value.getAsString()));
+        return values;
     }
 
     private static Set<String> statusIds(TechniqueCatalog catalog) {

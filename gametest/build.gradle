@@ -18,6 +18,9 @@ dependencies {
     implementation 'dev.kizuna.meridian.technique:server'
     implementation 'dev.kizuna.meridian.technique:shared'
     implementation 'dev.kizuna.meridian:fabric'
+    // 中卷用例订阅 Damage 的伤害观察、查附伤标签；Damage 本身由完整装配在运行期装入。
+    compileOnly('dev.kizuna.meridian.vanilla:fabric') { transitive = false }
+    compileOnly('dev.kizuna.meridian.vanilla:server') { transitive = false }
     // 正式数据包按安装 JAR 装入，验证发行包自己的清单、配方包和资源发现。Gradle 9 的依赖块里 project() 返回
     // 依赖对象，所以从根工程取 fabric 工程的 jar 任务。
     localRuntime files(rootProject.project(':fabric').tasks.named('jar'))

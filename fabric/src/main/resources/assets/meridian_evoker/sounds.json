@@ -180,5 +180,173 @@
         "type": "event"
       }
     ]
+  },
+  "infuse.raise": {
+    "subtitle": "subtitles.meridian_evoker.infuse.raise",
+    "sounds": [
+      {
+        "name": "minecraft:entity.evoker.cast_spell",
+        "type": "event"
+      }
+    ]
+  },
+  "metal_edge.wipe": {
+    "subtitle": "subtitles.meridian_evoker.metal_edge.wipe",
+    "sounds": [
+      {
+        "name": "minecraft:block.grindstone.use",
+        "type": "event"
+      }
+    ]
+  },
+  "metal_edge.cast": {
+    "subtitle": "subtitles.meridian_evoker.metal_edge.cast",
+    "sounds": [
+      {
+        "name": "minecraft:block.bell.use",
+        "type": "event"
+      }
+    ]
+  },
+  "earth_quake.stomp": {
+    "subtitle": "subtitles.meridian_evoker.earth_quake.stomp",
+    "sounds": [
+      {
+        "name": "minecraft:entity.ravager.step",
+        "type": "event"
+      }
+    ]
+  },
+  "earth_quake.cast": {
+    "subtitle": "subtitles.meridian_evoker.earth_quake.cast",
+    "sounds": [
+      {
+        "name": "minecraft:block.rooted_dirt.break",
+        "type": "event"
+      }
+    ]
+  },
+  "fire_burn.rub": {
+    "subtitle": "subtitles.meridian_evoker.fire_burn.rub",
+    "sounds": [
+      {
+        "name": "meridian_evoker:hands/rub"
+      }
+    ]
+  },
+  "fire_burn.blow": {
+    "subtitle": "subtitles.meridian_evoker.fire_burn.blow",
+    "sounds": [
+      {
+        "name": "meridian_evoker:breath/puff"
+      }
+    ]
+  },
+  "fire_burn.spark": {
+    "subtitle": "subtitles.meridian_evoker.fire_burn.spark",
+    "sounds": [
+      {
+        "name": "minecraft:item.flintandsteel.use",
+        "type": "event"
+      }
+    ]
+  },
+  "fire_burn.cast": {
+    "subtitle": "subtitles.meridian_evoker.fire_burn.cast",
+    "sounds": [
+      {
+        "name": "minecraft:item.firecharge.use",
+        "type": "event"
+      }
+    ]
+  },
+  "water_frost.press": {
+    "subtitle": "subtitles.meridian_evoker.water_frost.press",
+    "sounds": [
+      {
+        "name": "minecraft:block.powder_snow.step",
+        "type": "event"
+      }
+    ]
+  },
+  "water_frost.cast": {
+    "subtitle": "subtitles.meridian_evoker.water_frost.cast",
+    "sounds": [
+      {
+        "name": "minecraft:block.amethyst_block.chime",
+        "type": "event"
+      }
+    ]
+  },
+  "wood_thunder.clap": {
+    "subtitle": "subtitles.meridian_evoker.wood_thunder.clap",
+    "sounds": [
+      {
+        "name": "meridian_evoker:hands/clap"
+      }
+    ]
+  },
+  "wood_thunder.clap_spark": {
+    "subtitle": "subtitles.meridian_evoker.wood_thunder.clap_spark",
+    "sounds": [
+      {
+        "name": "minecraft:entity.lightning_bolt.impact",
+        "type": "event"
+      }
+    ]
+  },
+  "wood_thunder.cast": {
+    "subtitle": "subtitles.meridian_evoker.wood_thunder.cast",
+    "sounds": [
+      {
+        "name": "minecraft:item.trident.thunder",
+        "type": "event"
+      }
+    ]
+  },
+  "hit.metal": {
+    "subtitle": "subtitles.meridian_evoker.hit.metal",
+    "sounds": [
+      {
+        "name": "minecraft:block.chain.place",
+        "type": "event"
+      }
+    ]
+  },
+  "hit.earth": {
+    "subtitle": "subtitles.meridian_evoker.hit.earth",
+    "sounds": [
+      {
+        "name": "minecraft:block.rooted_dirt.break",
+        "type": "event"
+      }
+    ]
+  },
+  "hit.fire": {
+    "subtitle": "subtitles.meridian_evoker.hit.fire",
+    "sounds": [
+      {
+        "name": "minecraft:entity.generic.burn",
+        "type": "event"
+      }
+    ]
+  },
+  "hit.water": {
+    "subtitle": "subtitles.meridian_evoker.hit.water",
+    "sounds": [
+      {
+        "name": "minecraft:entity.player.hurt_freeze",
+        "type": "event"
+      }
+    ]
+  },
+  "hit.wood": {
+    "subtitle": "subtitles.meridian_evoker.hit.wood",
+    "sounds": [
+      {
+        "name": "minecraft:entity.lightning_bolt.impact",
+        "type": "event"
+      }
+    ]
   }
 }

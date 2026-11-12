@@ -4,7 +4,9 @@ PolyForm Noncommercial 1.0.0 仅适用于本项目有权许可的原创部分。
 
 | 组件 | 版本 / 来源 | 许可与使用 |
 |---|---|---|
-| 平静呼吸录音 | christophe1138，[breathingsleeping.wav](https://freesound.org/people/christophe1138/sounds/554074/)，取作者公开的 [OGG 预览](https://cdn.freesound.org/previews/554/554074_9054093-lq.ogg) | CC0 1.0；由 `scripts/process_breath_sounds.py` 截取、降噪、滤波后作为 7 个 OGG 分发，详见[声音与图标素材](docs/wiki/Sound-Assets.md) |
+| 平静呼吸录音 | christophe1138，[breathingsleeping.wav](https://freesound.org/people/christophe1138/sounds/554074/)，取作者公开的 [OGG 预览](https://cdn.freesound.org/previews/554/554074_9054093-lq.ogg) | CC0 1.0；由 `scripts/process_breath_sounds.py` 截取、降噪、滤波后作为 7 个 OGG 分发；`scripts/process_infuse_sounds.py` 另截一口呼气作为 `breath/puff.ogg`，详见[声音与图标素材](docs/wiki/Sound-Assets.md) |
+| 击掌录音 | semccab，[hand clap.wav](https://freesound.org/people/semccab/sounds/154399/)，取作者公开的 [hq MP3 预览](https://cdn.freesound.org/previews/154/154399_2592496-hq.mp3) | CC0 1.0；由 `scripts/process_infuse_sounds.py` 截取第一下击掌，作为 `hands/clap.ogg` 分发，详见[声音与图标素材](docs/wiki/Sound-Assets.md) |
+| 搓掌录音 | bbrocer，[Rubbing Hands Together.wav](https://freesound.org/people/bbrocer/sounds/382658/)，取作者公开的 [hq MP3 预览](https://cdn.freesound.org/previews/382/382658_4297074-hq.mp3) | CC0 1.0；由 `scripts/process_infuse_sounds.py` 去爆点、截取四下搓动，作为 `hands/rub.ogg` 分发，详见[声音与图标素材](docs/wiki/Sound-Assets.md) |
 | 状态效果图标 | 本项目经 CPA（`cliproxy` 后端）用 `gpt-image-2.5-sunburst` 生成，再缩到 18 × 18 | 本项目占位素材；不含第三方图像 |
 | Kizuna's Meridian Mod Framework | 同级独立仓库 | PolyForm Noncommercial 1.0.0；构建期导出配方包与验证装配使用，不内嵌源码、生成类或 JAR |
 | Kizuna's Meridian Technique Framework | 同级独立仓库 | PolyForm Noncommercial 1.0.0；必需运行依赖，读取本仓目录，不内嵌 |

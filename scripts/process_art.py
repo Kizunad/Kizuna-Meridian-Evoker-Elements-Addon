@@ -16,10 +16,11 @@ from PIL import Image, ImageDraw
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / ".local-art"
 TEXTURES = ROOT / "fabric/src/main/resources/assets/meridian_evoker/textures"
-VOLUMES = ("nourish",)
+VOLUMES = ("nourish", "infuse")
 TECHNIQUES = ("metal_arms", "earth_legs", "fire_heart", "water_return", "wood_sinew",
-              "refine_lung", "refine_spleen", "refine_heart", "refine_kidney", "refine_liver")
-# 十式共用的边框配色，取自原稿实际画出的颜色：深青灰底、墨黑外圈、淡玉绿内圈。
+              "refine_lung", "refine_spleen", "refine_heart", "refine_kidney", "refine_liver",
+              "metal_edge", "earth_quake", "fire_burn", "water_frost", "wood_thunder")
+# 全书各式共用的边框配色，取自原稿实际画出的颜色：深青灰底、墨黑外圈、淡玉绿内圈。
 ICON_BACKGROUND = (25, 37, 50)
 OUTER_RIM = (8, 9, 10)
 INNER_RIM = (190, 234, 186)

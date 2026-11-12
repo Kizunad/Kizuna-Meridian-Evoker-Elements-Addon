@@ -1,9 +1,11 @@
 # 五脏诀接入
 
-书 `meridian_evoker:five_organs`。目前只有上卷 `nourish`「养」，含强身五式、炼元五式；中卷「附」、下卷以后再进目录。
-玩家用 `/meridian technique learn @s meridian_evoker:nourish` 学卷，经功法库正式入口施放。
+书 `meridian_evoker:five_organs`。上卷 `nourish`「养」含强身五式、炼元五式；中卷 `infuse`「附」含附伤五式，
+要先学会《养》全部十式才能学；下卷以后再进目录。
+玩家用 `/meridian technique learn @s meridian_evoker:nourish`（再 `…:infuse`）学卷，经功法库正式入口施放。
 生存来源：目录给《养》声明了 `scroll_drops { entity_type: "minecraft:evoker" chance: 0.25 }`，功法库据此往原版唤魔者掉落表加一池，
 玩家杀死会这一卷的唤魔者时掉一卷（Threatening 学卷表给游炁、真炁两档唤魔者都学《养》）。
+《附》声明了同样的掉落，但 C6c 之前没有唤魔者学《附》，生存里暂时只能用命令学。
 语言文件给每式写 `technique.meridian_evoker.<式>.note`（卷轴提示里接在境界、费用后面），
 给五个强身状态写 `effect.meridian_evoker.<状态>.muscles`（背包效果栏提示里的部位名）。上手步骤见[五脏诀上手](Getting-Started.md)。
 
@@ -51,6 +53,31 @@
 配方族 `meridian_evoker:refine` 放在 `META-INF/kizuna_meridian/addons/meridian_evoker.pb`，每种器官 × 每种可用相态一条，共 13 条。
 炼化率：游炁 3%（原稿写明为占位）、真炁 7.5%、化元 20%。
 
+## 附伤五式
+
+类别增益，全程限速为原速 0.4，AI 权重 0。起手 2.0 s（受伤会打断）、收势 1.5 s、冷却 17 s。
+费用 0.6 本行真元，相态要气态以上（`ATTRIBUTE_AT_LEAST_PHASE`），按表里经和本脏经的可付余额分摊。
+本行真元只有炼元会送进本脏经，所以要先在《养》里炼过本行；肝在真炁没有可炼的配方，惊雷又要化元。
+
+- **附行。** 起手结束那一刻（2.0 s）写进身体：之后 18 s 里每一下本人近战、破门斩和千里腿、有主人的尖牙、
+  恼鬼（算主人的）都另带一记本行伤害，落在主击打中的同一部位。
+  剂量 = 主击原始伤害（近战含肌肉系数）× 0.25 × 曲线；曲线 0.5 s 升满，保持到 15 s，18 s 归零。
+- 再放一式覆盖旧附行；起手被打断不写；身体死亡时清除，重生后没有。每一击怎么结算见 Damage 仓 Wiki。
+
+| 式 | 境界 | 本脏做功 | 伤害类型 | 原版附带 | 命中声（字幕） |
+|---|---|---|---|---|---|
+| 锐金 `metal_edge` | 真炁 | 12 W × 2 s | `meridian_evoker:metal`，切割 | 无 | 金气割入 |
+| 震土 `earth_quake` | 真炁 | 16 W × 2 s | `meridian_evoker:earth`，钝击 | 多推开 0.3（直接加到速度上，按击退抗性折算） | 土气震入 |
+| 灼火 `fire_burn` | 真炁 | 25 W × 1.5 s | `meridian_evoker:fire`，灼热 | 点着 20 tick | 火气灼入 |
+| 寒水 `water_frost` | 真炁 | 12 W × 2 s | `meridian_evoker:water`，寒冷 | 冻结加 50 tick，封顶 139 | 寒气侵入 |
+| 惊雷 `wood_thunder` | 化元 | 16 W × 2 s | `meridian_evoker:wood`，电击 | 无 | 电气窜入 |
+
+- **相克。** 看目标身体的主属性（某一行真元占内腔总量、含无属性的不低于 25% 才算）：金克木、木克土、土克水、水克火、火克金。
+  克对方时附伤 ×1.5、命中声音量 ×1.5；被克时 ×0.5、音量 ×0.6、音高 +0.2。没有身体或没有主属性的目标按 ×1。
+- **伤害类型标签。** 五个类型各进对应的 `#meridian:kind/*`，再进 `#minecraft:no_knockback`、`#minecraft:bypasses_cooldown`；
+  不进 `#meridian:melee`、`#meridian:infusable`（附伤不再触发附伤），也不进原版 `is_fire`、`is_freezing`（用户 2026-11-12 定）。
+- 命中声在目标位置播放，类别跟主人（玩家主人是「玩家」）。
+
 ## 声音
 
 目录里只写 `meridian_evoker:<事件>`，`sounds.json` 再指向原版事件或本仓录音，中英字幕齐全。
@@ -62,3 +89,4 @@ Human 在施放者位置按「玩家」类别播放。事件表和素材来源�
 - 真实玩家施放链：`flock /tmp/kizuna-gradle.lock ./gradlew --no-daemon :gametest:runGametest -PgametestRunDir=<新目录>`。
   运行目录要先放 `eula=true` 的 `eula.txt`：装配里的 owo 会接管 EULA 提示，空目录会在启动时等控制台输入而失败。
 - GameTest 由真实登录的玩家学卷，经 `TechniqueService` 施放，覆盖付费、本脏、境界、强身曲线、炼元批次与守恒、吐纳与储备互斥、声音时刻。
+  中卷另覆盖前置卷、附行起止与覆盖、打断、死亡清除、同部位附伤与原版附带、相克、尖牙与破门斩来源、命中声。

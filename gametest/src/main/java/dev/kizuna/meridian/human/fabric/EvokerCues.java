@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/** 五脏诀动作声的期望时间表：照原稿 §9.2 与动画稿 §5.12 手写，不从生产目录推导。 */
+/** 五脏诀动作声的期望时间表：照原稿 §9.2、动画稿 §5.12 与 C6b SPEC §5.7 手写，不从生产目录推导。 */
 final class EvokerCues {
     private static final String NAMESPACE = "meridian_evoker";
     private static final double POSITION_TOLERANCE = 0.13;
@@ -47,6 +47,31 @@ final class EvokerCues {
                     cue("wood_sinew.pounce", 2_800, 0.5F, 0.6F),
                     cue("wood_sinew.cast", 2_800, 0.5F, 0.8F)));
 
+    /** 中卷五式开头共用的抬手声。 */
+    private static final Cue RAISE = cue("infuse.raise", 0, 0.5F, 1.2F);
+
+    private static final Map<String, List<Cue>> INFUSE = Map.of(
+            "metal_edge", List.of(RAISE,
+                    cue("metal_edge.wipe", 1_100, 0.5F, 1.6F),
+                    cue("metal_edge.cast", 2_000, 0.3F, 2.0F)),
+            "earth_quake", List.of(RAISE,
+                    cue("earth_quake.stomp", 1_950, 1.0F, 0.8F),
+                    cue("earth_quake.cast", 2_000, 0.8F, 0.7F)),
+            "fire_burn", List.of(RAISE,
+                    cue("fire_burn.rub", 700, 0.5F, 1.0F),
+                    cue("fire_burn.blow", 1_300, 0.6F, 1.3F),
+                    cue("fire_burn.spark", 1_700, 0.6F, 1.0F),
+                    cue("fire_burn.cast", 2_000, 0.5F, 1.3F)),
+            "water_frost", List.of(RAISE,
+                    cue("water_frost.press", 700, 0.5F, 1.0F),
+                    cue("water_frost.press", 1_000, 0.5F, 0.9F),
+                    cue("water_frost.press", 1_350, 0.5F, 0.8F),
+                    cue("water_frost.cast", 2_000, 0.5F, 1.5F)),
+            "wood_thunder", List.of(RAISE,
+                    cue("wood_thunder.clap", 1_400, 0.8F, 1.0F),
+                    cue("wood_thunder.clap_spark", 1_400, 0.2F, 2.0F),
+                    cue("wood_thunder.cast", 2_000, 0.2F, 1.6F)));
+
     private static final Map<String, Breath> REFINE = Map.of(
             "refine_lung", new Breath(0, 2_000, "si", "metal", 0.15F, 1.8F),
             "refine_spleen", new Breath(0, 1_000, "hu", "earth", 0.2F, 0.8F),
@@ -59,9 +84,12 @@ final class EvokerCues {
     }
 
     static List<Cue> expected(String technique) {
-        // 强身直接查表；炼元按六轮呼吸展开吸气、吐字与本行提示音。
+        // 强身、中卷直接查表；炼元按六轮呼吸展开吸气、吐字与本行提示音。
         if (STRENGTHEN.containsKey(technique)) {
             return STRENGTHEN.get(technique);
+        }
+        if (INFUSE.containsKey(technique)) {
+            return INFUSE.get(technique);
         }
         Breath breath = REFINE.get(technique);
         if (breath == null) {
@@ -80,8 +108,9 @@ final class EvokerCues {
 
     static void assertTimeline(GameTestHelper context, EvokerTestPlayer fixture, String technique, long started) {
         // 只核对本人位置的本仓事件；同一 tick 的几个声音不计先后，连接在下一 tick 才捕获，容一个 tick。
+        // 中卷的抬手声在 0 ms，和起手同一 tick 发出、同一 tick 记下，所以施放那一 tick 也算。
         var heard = new ArrayList<>(fixture.sounds().stream()
-                .filter(sound -> sound.tick() > started)
+                .filter(sound -> sound.tick() >= started)
                 .filter(sound -> sound.id().getNamespace().equals(NAMESPACE))
                 .filter(sound -> atPlayer(fixture, sound))
                 .toList());

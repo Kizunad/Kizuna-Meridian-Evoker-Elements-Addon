@@ -22,7 +22,7 @@ import java.util.List;
 public final class EvokerResourceGameTest {
     private static final String MOD_ID = "meridian_evoker";
     private static final String ASSETS = "assets/" + MOD_ID + "/";
-    private static final int TECHNIQUES = 10;
+    private static final int TECHNIQUES = 15;
     private static final List<String> STRENGTHEN = List.of(
             "metal_arms", "earth_legs", "fire_heart", "water_return", "wood_sinew");
 
@@ -72,12 +72,17 @@ public final class EvokerResourceGameTest {
     }
 
     private static void assertCatalogSounds(GameTestHelper context, JsonObject sounds, TechniqueDefinition definition) {
-        // 目录只写本仓事件 ID，且每个都在 sounds.json 里登记。
+        // 目录只写本仓事件 ID，且每个都在 sounds.json 里登记；附行的命中声也算。
         for (TechniqueEffect effect : definition.getEffectsList()) {
-            if (!effect.hasSound()) {
+            String soundId;
+            if (effect.hasSound()) {
+                soundId = effect.getSound().getSoundId();
+            } else if (effect.hasElementalInfusion() && effect.getElementalInfusion().hasHitSound()) {
+                soundId = effect.getElementalInfusion().getHitSound().getSoundId();
+            } else {
                 continue;
             }
-            Identifier id = Identifier.parse(effect.getSound().getSoundId());
+            Identifier id = Identifier.parse(soundId);
             context.assertTrue(id.getNamespace().equals(MOD_ID) && sounds.has(id.getPath()),
                     "目录声音没有登记：" + definition.getId() + " " + id);
         }
