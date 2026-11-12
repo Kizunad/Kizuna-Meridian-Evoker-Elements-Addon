@@ -25,8 +25,8 @@ import org.lwjgl.glfw.GLFW;
 
 /**
  * 照 Wiki「五脏诀上手」在一个新世界里走一遍，每步截图：卷轴提示、右键学卷、经脉未通、真元不够、肺炼、收势后两肺没有余力、
- * 歇过放金臂、背包效果栏的金臂说明、游炁放心火被拒、改境界到真炁并清空内腔后心炼起手被拒、开自动吐纳、
- * 吐纳窗口里的游离态与气态、关窗后心炼、心火说明。
+ * 歇过放金臂、背包效果栏的金臂说明、游炁放心火被拒、改境界到真炁并清空内腔后心炼起手被拒、一分钟后再清一次、开自动吐纳、
+ * 吐纳窗口里的游离态与气态、关窗后心炼、心火说明，再肾炼、放归水（炼出的水行留在肾经）、归水说明。
  * 命令都走服务端，和玩家在聊天栏输入的相同；进架势和放招按真实按键（R 与数字键），吐纳窗口的复选框和按钮按真实光标点击。
  * 截图写到运行目录 {@code screenshots/}。
  */
@@ -44,7 +44,8 @@ public final class EvokerWalkthroughClientTest implements FabricClientGameTest {
     private static final int SLOT_CENTER = 8;
     private static final int EFFECT_GAP = 2;
     private static final int EFFECT_HOVER = 16;
-    private static final int BREATHING_TICKS = 3 * 60 * 20;
+    private static final int BREATHING_TICKS = 4 * 60 * 20;
+    private static final int CLEAR_AGAIN_TICKS = 60 * 20;
     private static final double IDLE_CURSOR_X = WINDOW_WIDTH * 0.85;
     private static final double IDLE_CURSOR_Y = WINDOW_HEIGHT * 0.45;
     private static final String SCROLL = "meridian_evoker:nourish_scroll";
@@ -69,6 +70,7 @@ public final class EvokerWalkthroughClientTest implements FabricClientGameTest {
             learn(context, world);
             metalArms(context, world);
             fireLine(context, world);
+            waterLine(context);
         }
     }
 
@@ -97,6 +99,8 @@ public final class EvokerWalkthroughClientTest implements FabricClientGameTest {
         command(world, "execute as @a run meridian combat slot set 2 " + BOOK + "metal_arms");
         command(world, "execute as @a run meridian combat slot set 3 " + BOOK + "fire_heart");
         command(world, "execute as @a run meridian combat slot set 4 " + BOOK + "refine_heart");
+        command(world, "execute as @a run meridian combat slot set 5 " + BOOK + "refine_kidney");
+        command(world, "execute as @a run meridian combat slot set 6 " + BOOK + "water_return");
         settle(context);
         context.getInput().pressKey(InputConstants.Type.KEYSYM.getOrCreate(GLFW.GLFW_KEY_R));
         settle(context);
@@ -120,7 +124,8 @@ public final class EvokerWalkthroughClientTest implements FabricClientGameTest {
 
     private static void fireLine(ClientGameTestContext context, TestSingleplayerContext world) {
         // 游炁放心火被拒；改境界到真炁、清空内腔，心炼起手就被拒，拒绝说明在架势槽上方；
-        // 开自动吐纳三分钟攒气态真元，关窗后心炼、歇过放心火，看心火说明。
+        // 清空那一刻还在路上的扩散批次和脾外壁放回的游离态之后才落进经脉，等一分钟再清一次，
+        // 再开自动吐纳四分钟攒气态真元，关窗后心炼、歇过放心火，看心火说明。
         cast(context, 2);
         shoot(context, "09_reject_realm_fire_heart");
         command(world, "meridian body realm @a true_qi");
@@ -128,18 +133,33 @@ public final class EvokerWalkthroughClientTest implements FabricClientGameTest {
         settle(context);
         cast(context, 3);
         shoot(context, "10_reject_no_gas_in_heart");
+        context.waitTicks(CLEAR_AGAIN_TICKS);
+        command(world, "meridian qi set @a 0");
+        settle(context);
         breathe(context, world);
         refine(context, 3, "13_refine_heart_halfway");
         context.waitTicks(REST_TICKS - TOO_SOON_TICKS);
         cast(context, 2);
+        shoot(context, "14a_fire_heart_pressed");
         context.waitTicks(STATUS_TICKS);
         shoot(context, "14_fire_heart_cast");
         effectTooltip(context, "15_fire_heart_effect_tooltip");
     }
 
+    private static void waterLine(ClientGameTestContext context) {
+        // 同一轮吐纳攒下的气态真元接着肾炼；炼出的水行留在肾经，歇过放归水，看归水说明。
+        refine(context, 4, "16_refine_kidney_halfway");
+        context.waitTicks(REST_TICKS - TOO_SOON_TICKS);
+        cast(context, 5);
+        shoot(context, "17a_water_return_pressed");
+        context.waitTicks(STATUS_TICKS);
+        shoot(context, "17_water_return_cast");
+        effectTooltip(context, "18_water_return_effect_tooltip");
+    }
+
     private static void breathe(ClientGameTestContext context, TestSingleplayerContext world) {
         // 解锁札记与聚气卷后打开吐纳窗口，勾「自动吐纳」再点「开始吐纳」，第一次先出说明，再点一次。
-        // 窗口开着等三分钟（客户端测试里服务端随客户端逐 tick 走），拍纳入量下面的游离态、气态；关窗吐纳就停。
+        // 窗口开着等四分钟（客户端测试里服务端随客户端逐 tick 走），拍纳入量下面的游离态、气态；关窗吐纳就停。
         command(world, "meridian progression unlock @a");
         context.waitFor(client -> ClientProgression.canCultivate());
         context.runOnClient(client -> {
