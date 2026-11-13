@@ -1541,7 +1541,7 @@ definitions {
       refresh_before_expiry_millis: 3000
     }
   }
-  presentation { icon_id: "meridian_evoker:metal_edge" display_name: "锐金" description: "剑指抹锋，肺金之气附上拳脚兵刃；此后每一击另带一记切割。" }
+  presentation { icon_id: "meridian_evoker:metal_edge" display_name: "锐金" description: "剑指抹锋，肺金之气附上拳脚兵刃；此后每一击另带一记切割。「金断木折，火炽金熔」：附上的这一记，打在木行偏盛的人身上重一半、声更响；遇火行偏盛的人只剩一半，声音发轻发尖。" }
 }
 definitions {
   id: "meridian_evoker:earth_quake"
@@ -1645,7 +1645,7 @@ definitions {
       refresh_before_expiry_millis: 3000
     }
   }
-  presentation { icon_id: "meridian_evoker:earth_quake" display_name: "震土" description: "提膝震脚，脾土之气沉入拳脚；此后每一击另带一记钝击，并把目标多推开一些。" }
+  presentation { icon_id: "meridian_evoker:earth_quake" display_name: "震土" description: "提膝震脚，脾土之气沉入拳脚；此后每一击另带一记钝击，并把目标多推开一些。「土遏水奔，木破土沉」：附上的这一记，打在水行偏盛的人身上重一半、声更响；遇木行偏盛的人只剩一半，声音发轻发尖。" }
 }
 definitions {
   id: "meridian_evoker:fire_burn"
@@ -1763,7 +1763,7 @@ definitions {
       refresh_before_expiry_millis: 3000
     }
   }
-  presentation { icon_id: "meridian_evoker:fire_burn" display_name: "灼火" description: "搓掌吹火，心火附上拳脚；此后每一击另带一记灼热，并点着目标。" }
+  presentation { icon_id: "meridian_evoker:fire_burn" display_name: "灼火" description: "搓掌吹火，心火附上拳脚；此后每一击另带一记灼热，并点着目标。「火炽金熔，水灭火熄」：附上的这一记，打在金行偏盛的人身上重一半、声更响；遇水行偏盛的人只剩一半，声音发轻发尖。" }
 }
 definitions {
   id: "meridian_evoker:water_frost"
@@ -1881,7 +1881,7 @@ definitions {
       refresh_before_expiry_millis: 3000
     }
   }
-  presentation { icon_id: "meridian_evoker:water_frost" display_name: "寒水" description: "交替按浪，肾水寒气附上拳脚；此后每一击另带一记寒冷，并让目标结霜。" }
+  presentation { icon_id: "meridian_evoker:water_frost" display_name: "寒水" description: "交替按浪，肾水寒气附上拳脚；此后每一击另带一记寒冷，并让目标结霜。「水息烈火，土掩流泉」：附上的这一记，打在火行偏盛的人身上重一半、声更响；遇土行偏盛的人只剩一半，声音发轻发尖。" }
 }
 definitions {
   id: "meridian_evoker:wood_thunder"
@@ -1991,5 +1991,5 @@ definitions {
       refresh_before_expiry_millis: 3000
     }
   }
-  presentation { icon_id: "meridian_evoker:wood_thunder" display_name: "惊雷" description: "击掌引雷，肝木之气化作电弧附上拳脚；此后每一击另带一记电击。" }
+  presentation { icon_id: "meridian_evoker:wood_thunder" display_name: "惊雷" description: "击掌引雷，肝木之气化作电弧附上拳脚；此后每一击另带一记电击。「木破顽土，金断木折」：附上的这一记，打在土行偏盛的人身上重一半、声更响；遇金行偏盛的人只剩一半，声音发轻发尖。" }
 }
