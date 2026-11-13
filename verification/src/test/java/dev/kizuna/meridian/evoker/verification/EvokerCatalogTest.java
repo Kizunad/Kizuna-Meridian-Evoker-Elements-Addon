@@ -3,12 +3,16 @@ package dev.kizuna.meridian.evoker.verification;
 import dev.kizuna.meridian.protocol.pb.BodyMessages.CurvePoint;
 import dev.kizuna.meridian.protocol.pb.BodyMessages.QiPhase;
 import dev.kizuna.meridian.protocol.pb.BodyMessages.Realm;
+import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.AiHints;
+import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.AiRole;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.Category;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.CastPhases;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.ElementalInfusion;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.InfusionCounter;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.ModuleKind;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.OrganRefine;
+import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.PresentationDuration;
+import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.PresentationEffect;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.QiCost;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.QiCostMatching;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.QiDistribution;
@@ -16,6 +20,7 @@ import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.ScrollDrop;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.SoundAnchor;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.SoundCue;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.StatusBenefit;
+import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.SupportAiHints;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.TechniqueDefinition;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.TechniqueEffect;
 import dev.kizuna.meridian.technique.protocol.pb.TechniqueMessages.TechniqueSlot;
@@ -26,12 +31,13 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/** 发行目录经正式 Human 内容和 Technique 校验器注册，并逐式对照原稿 §3、§5.1、§5.2 和 C6b SPEC §5 的表。 */
+/** 发行目录经正式 Human 内容和 Technique 校验器注册，逐式对照原稿 §3、§5.1、§5.2，C6b SPEC §5，C6c SPEC §5.1、§6.1。 */
 public final class EvokerCatalogTest {
     private static final String BOOK = "meridian_evoker:five_organs";
     private static final String VOLUME = "meridian_evoker:nourish";
@@ -63,6 +69,14 @@ public final class EvokerCatalogTest {
     private static final double LOSE_VOLUME = 0.6;
     private static final double LOSE_PITCH = 0.2;
     private static final String RAISE_SOUND = "meridian_evoker:infuse.raise";
+    private static final String CLIP_PREFIX = "meridian_evoker:evoker_";
+    private static final int INFUSE_ORDER = 0;
+    private static final double INFUSE_MINIMUM_METERS = 8;
+    private static final long INFUSE_REFRESH_MILLIS = 3_000;
+    private static final int FAR_BUFF_ORDER = 1;
+    private static final double FAR_BUFF_MINIMUM_METERS = 12;
+    /** 唤魔者远处放的强身：厚土、归水（用户 11-13 定）。其余强身和炼元生物不放。 */
+    private static final Set<String> FAR_BUFFS = Set.of("meridian_evoker:earth_legs", "meridian_evoker:water_return");
     private static final double TOLERANCE = 1e-9;
 
     /** 强身一式：行、最低境界、本脏数、肌肉标签、本行真元、本脏功率与时长、冷却。 */
@@ -166,8 +180,10 @@ public final class EvokerCatalogTest {
             assertEquals(INFUSE_RECOVERY_MILLIS, phases.getRecoveryMillis());
             assertTrue(phases.getInterruptibleByDamage());
             assertEquals(INFUSE_COOLDOWN_MILLIS, definition.getCooldownMillis());
-            assertZeroAiWeight(definition);
-            assertEquals(RAISE_SOUND, definition.getEffects(0).getSound().getSoundId());
+            assertPrepare(definition, INFUSE_ORDER, INFUSE_MINIMUM_METERS);
+            assertEquals(INFUSE_REFRESH_MILLIS, definition.getAiHints().getSupport().getRefreshBeforeExpiryMillis());
+            assertPresentation(definition);
+            assertEquals(RAISE_SOUND, firstSound(definition).getSoundId());
             assertInfusion(definition, expected);
         }
     }
@@ -194,7 +210,8 @@ public final class EvokerCatalogTest {
             assertEquals(expected.qi(), qi.getAmount().getValue(), TOLERANCE);
             assertWork(definition.getCost().getWork(0), expected.watts(), expected.seconds());
             assertEquals(expected.cooldownMillis(), definition.getCooldownMillis());
-            assertZeroAiWeight(definition);
+            assertStrengthenAi(definition);
+            assertPresentation(definition);
             assertStatusWithinCooldown(definition);
         }
     }
@@ -218,11 +235,15 @@ public final class EvokerCatalogTest {
             assertEquals(REFINE_RECOVERY_MILLIS, phases.getRecoveryMillis());
             assertTrue(phases.getInterruptibleByDamage());
             assertEquals(REFINE_COOLDOWN_MILLIS, definition.getCooldownMillis());
-            assertZeroAiWeight(definition);
+            assertNoRole(definition);
+            assertPresentation(definition);
 
-            TechniqueEffect first = definition.getEffects(0);
-            assertEquals(REFINE_START_MILLIS, first.getAtMillis());
-            OrganRefine refine = first.getOrganRefine();
+            TechniqueEffect window = definition.getEffectsList().stream()
+                    .filter(TechniqueEffect::hasOrganRefine)
+                    .findFirst()
+                    .orElseThrow();
+            assertEquals(REFINE_START_MILLIS, window.getAtMillis());
+            OrganRefine refine = window.getOrganRefine();
             assertEquals("zang", refine.getOrganSlotId());
             assertEquals("channels", refine.getMeridianSlotId());
             assertEquals(EvokerContent.RECIPE_FAMILY, refine.getRecipeFamily());
@@ -298,10 +319,56 @@ public final class EvokerCatalogTest {
         assertEquals(seconds, work.getDuration().getValue(), TOLERANCE);
     }
 
-    private static void assertZeroAiWeight(TechniqueDefinition definition) {
-        // C6a、C6b 先不让生物选这些式，C6c 再按 §8.4 定。
+    private static void assertStrengthenAi(TechniqueDefinition definition) {
+        // 厚土、归水是远处的准备式，排在附伤式后、轻身前，不补放；金臂、心火、舒筋生物不放（原稿 §8.3、§8.4）。
+        if (!FAR_BUFFS.contains(definition.getId())) {
+            assertNoRole(definition);
+            return;
+        }
+        assertPrepare(definition, FAR_BUFF_ORDER, FAR_BUFF_MINIMUM_METERS);
+        assertFalse(definition.getAiHints().getSupport().hasRefreshBeforeExpiryMillis());
+    }
+
+    private static void assertPrepare(TechniqueDefinition definition, int order, double minimumMeters) {
+        // 准备式由宿主大脑按角色施放，不进打击选式，所以权重仍为 0；先后与距离下限照 C6c SPEC §5.1。
+        AiHints hints = definition.getAiHints();
+        assertEquals(0, hints.getCategoryWeight().getValue(), TOLERANCE);
+        assertEquals(minimumMeters, hints.getMinimumDistance().getValue(), TOLERANCE);
+        SupportAiHints support = hints.getSupport();
+        assertEquals(AiRole.AI_ROLE_PREPARE, support.getRole());
+        assertTrue(support.hasOrder());
+        assertEquals(order, support.getOrder());
+        assertFalse(support.getRequiresMeleeWeapon());
+    }
+
+    private static void assertNoRole(TechniqueDefinition definition) {
+        // 生物不放的式：没有辅助角色，打击选式权重为 0，距离不设门槛。
         assertTrue(definition.hasAiHints());
-        assertEquals(0, definition.getAiHints().getCategoryWeight().getValue(), TOLERANCE);
+        AiHints hints = definition.getAiHints();
+        assertFalse(definition.getId(), hints.hasSupport());
+        assertEquals(0, hints.getCategoryWeight().getValue(), TOLERANCE);
+        assertEquals(0, hints.getMinimumDistance().getValue(), TOLERANCE);
+    }
+
+    private static void assertPresentation(TechniqueDefinition definition) {
+        // 起手即播同名 PA 剪辑，播到收势结束；剪辑 ID 是式名前加 evoker_，每式只有一条表现。
+        TechniqueEffect first = definition.getEffects(0);
+        assertEquals(0, first.getAtMillis());
+        PresentationEffect presentation = first.getPresentation();
+        String path = definition.getId().substring(definition.getId().indexOf(':') + 1);
+        assertEquals(CLIP_PREFIX + path, presentation.getId());
+        assertEquals(PresentationDuration.UNTIL_RECOVERY_END, presentation.getDuration());
+        assertEquals(0, presentation.getStartMillis());
+        assertEquals(1, definition.getEffectsList().stream().filter(TechniqueEffect::hasPresentation).count());
+    }
+
+    private static SoundCue firstSound(TechniqueDefinition definition) {
+        // 按声明顺序取第一条声音效果。
+        return definition.getEffectsList().stream()
+                .filter(TechniqueEffect::hasSound)
+                .findFirst()
+                .orElseThrow()
+                .getSound();
     }
 
     private static void assertStatusWithinCooldown(TechniqueDefinition definition) {

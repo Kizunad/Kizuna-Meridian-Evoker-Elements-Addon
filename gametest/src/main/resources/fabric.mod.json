@@ -7,6 +7,7 @@
   "entrypoints": {
     "fabric-gametest": [
       "dev.kizuna.meridian.human.fabric.EvokerResourceGameTest",
+      "dev.kizuna.meridian.human.fabric.EvokerPresentationGameTest",
       "dev.kizuna.meridian.human.fabric.EvokerPaymentGameTest",
       "dev.kizuna.meridian.human.fabric.EvokerStrengthenGameTest",
       "dev.kizuna.meridian.human.fabric.EvokerRefineGameTest",
@@ -15,5 +16,5 @@
       "dev.kizuna.meridian.human.fabric.EvokerInfuseGameTest"
     ]
   },
-  "depends": {"fabric-api": "*", "meridian_technique": "*", "meridian_human_host": "*", "meridian_evoker": "*", "meridian_humanoid_host": "*", "meridian_vanilla_damage": "*"}
+  "depends": {"fabric-api": "*", "meridian_technique": "*", "meridian_human_host": "*", "meridian_evoker": "*", "meridian_humanoid_host": "*", "meridian_vanilla_damage": "*", "kizuna_players_animation": "*"}
 }
