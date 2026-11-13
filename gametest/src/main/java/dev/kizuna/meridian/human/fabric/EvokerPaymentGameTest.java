@@ -17,7 +17,7 @@ public final class EvokerPaymentGameTest {
     private static final double TOLERANCE = 1e-9;
     private static final double TIRED_WATTS = 20;
     private static final double TIRED_SECONDS = 29.5;
-    private static final String NO_METAL_QI = "金行真元不够：要 0.3，可付 0";
+    private static final String NO_METAL_QI = "左手阳明大肠经 等 4 条经脉的金行真元不够：要 0.3，可付 0";
     private static final List<String> METAL_ZANG = EvokerTestPlayer.meridians(List.of("lung"));
     private static final List<String> METAL_FU = EvokerTestPlayer.meridians(List.of("large_intestine"));
     private static final List<String> METAL = EvokerTestPlayer.meridians(List.of("lung", "large_intestine"));

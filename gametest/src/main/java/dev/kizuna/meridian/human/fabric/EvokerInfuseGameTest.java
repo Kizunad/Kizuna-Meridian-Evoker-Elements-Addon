@@ -132,7 +132,7 @@ public final class EvokerInfuseGameTest {
                     "境界不够：这一式要化元，你现在是真炁");
             charge(fixture, FIRE, EvokerTestPlayer.FREE_DENSITY);
             assertRejected(context, fixture.cast(FIRE.technique()), TechniqueFailure.INSUFFICIENT_ATTRIBUTE_QI,
-                    "火行真元不够：要 0.6，可付 0");
+                    "左手少阴心经 等 4 条经脉的火行真元不够：要气态以上 0.6，可付 0；另有游离态 8，不算");
             EvokerTestPlayer.finish(context, players);
         });
     }

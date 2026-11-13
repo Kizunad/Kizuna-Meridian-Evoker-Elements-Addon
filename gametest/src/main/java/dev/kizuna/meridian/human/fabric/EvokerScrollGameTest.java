@@ -39,6 +39,7 @@ import net.minecraft.world.phys.Vec3;
  */
 public final class EvokerScrollGameTest {
     private static final int TIMEOUT = 200;
+    private static final int TECHNIQUE_LINES = 10;
     private static final int BIRTH_TICKS = 2;
     private static final int LOOT_ROLLS = 200;
     private static final int LEAST_DROPS = 25;
@@ -107,14 +108,14 @@ public final class EvokerScrollGameTest {
 
     @GameTest(maxTicks = TIMEOUT)
     public void scrollTooltipListsRealmAndCostOfEveryTechnique(GameTestHelper context) {
-        // 卷轴提示每式一行，境界与费用读生产目录；炼元五式写不耗真元。语言补充说明只在客户端显示，这里不判。
+        // 卷轴提示每式一行，末尾再有一行讲怎么学；境界与费用读生产目录，炼元五式写不耗真元。
         EvokerTestPlayer.ready(context, fixture -> {
             var lines = new ArrayList<String>();
             ItemStack stack = new ItemStack(scrollItem());
             stack.getItem().appendHoverText(stack, Item.TooltipContext.of(context.getLevel()), TooltipDisplay.DEFAULT,
                     line -> lines.add(line.getString()), TooltipFlag.NORMAL);
             System.out.println("[五脏诀卷轴提示] " + lines);
-            context.assertTrue(lines.size() == 10, "卷轴提示不是十式各一行：" + lines);
+            context.assertTrue(lines.size() == TECHNIQUE_LINES + 1, "卷轴提示不是十式各一行再加一行学法：" + lines);
             assertLine(context, lines, "游炁，金行真元 0.3");
             assertLine(context, lines, "真炁，火行真元");
             assertLine(context, lines, "化元，木行真元");
