@@ -81,5 +81,7 @@
   "effect.meridian_evoker.water_return": "Returning Water",
   "effect.meridian_evoker.water_return.muscles": "Leg ",
   "effect.meridian_evoker.wood_sinew": "Sinew Stretch",
-  "effect.meridian_evoker.wood_sinew.muscles": "Leg "
+  "effect.meridian_evoker.wood_sinew.muscles": "Leg ",
+  "advancements.meridian_evoker.cultivators.evoker.title": "Five Organs Art",
+  "advancements.meridian_evoker.cultivators.evoker.description": "In woodland mansions and among raiding parties, evokers practise the Five Organs Art; defeat one and its Nourish volume may fall."
 }

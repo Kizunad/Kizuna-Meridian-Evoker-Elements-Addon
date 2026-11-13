@@ -1,0 +1,50 @@
+{
+  "parent": "meridian_progression:cultivation/cultivators",
+  "display": {
+    "icon": {
+      "id": "minecraft:totem_of_undying"
+    },
+    "title": {
+      "translate": "advancements.meridian_evoker.cultivators.evoker.title"
+    },
+    "description": {
+      "translate": "advancements.meridian_evoker.cultivators.evoker.description"
+    }
+  },
+  "criteria": {
+    "hurt": {
+      "trigger": "minecraft:player_hurt_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:entity_type": [
+                "minecraft:evoker"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "hurt_by": {
+      "trigger": "minecraft:entity_hurt_player",
+      "conditions": {
+        "damage": {
+          "source_entity": {
+            "minecraft:entity_type": [
+              "minecraft:evoker"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "hurt",
+      "hurt_by"
+    ]
+  ]
+}

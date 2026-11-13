@@ -81,5 +81,7 @@
   "effect.meridian_evoker.water_return": "归水",
   "effect.meridian_evoker.water_return.muscles": "两腿",
   "effect.meridian_evoker.wood_sinew": "舒筋",
-  "effect.meridian_evoker.wood_sinew.muscles": "两腿"
+  "effect.meridian_evoker.wood_sinew.muscles": "两腿",
+  "advancements.meridian_evoker.cultivators.evoker.title": "五脏诀",
+  "advancements.meridian_evoker.cultivators.evoker.description": "林地府邸和袭村的队伍里，唤魔者修的是五脏诀；打倒它，「养」字那一卷就可能落下。"
 }

@@ -13,7 +13,8 @@
       "dev.kizuna.meridian.human.fabric.EvokerRefineGameTest",
       "dev.kizuna.meridian.human.fabric.EvokerScrollGameTest",
       "dev.kizuna.meridian.human.fabric.EvokerGettingStartedGameTest",
-      "dev.kizuna.meridian.human.fabric.EvokerInfuseGameTest"
+      "dev.kizuna.meridian.human.fabric.EvokerInfuseGameTest",
+      "dev.kizuna.meridian.human.fabric.EvokerAdvancementGameTest"
     ]
   },
   "depends": {"fabric-api": "*", "meridian_technique": "*", "meridian_human_host": "*", "meridian_evoker": "*", "meridian_humanoid_host": "*", "meridian_vanilla_damage": "*", "kizuna_players_animation": "*"}
