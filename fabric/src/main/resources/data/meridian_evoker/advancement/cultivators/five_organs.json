@@ -1,0 +1,23 @@
+{
+  "parent": "meridian_progression:cultivation/cultivators",
+  "display": {
+    "icon": {
+      "id": "meridian_evoker:infuse_scroll"
+    },
+    "title": {
+      "translate": "advancements.meridian_evoker.cultivators.five_organs.title"
+    },
+    "description": {
+      "translate": "advancements.meridian_evoker.cultivators.five_organs.description"
+    },
+    "frame": "goal"
+  },
+  "criteria": {
+    "completed": {
+      "trigger": "meridian_technique:book_completed",
+      "conditions": {
+        "book": "meridian_evoker:five_organs"
+      }
+    }
+  }
+}

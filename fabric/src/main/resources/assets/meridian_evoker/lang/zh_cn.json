@@ -83,5 +83,10 @@
   "effect.meridian_evoker.wood_sinew": "舒筋",
   "effect.meridian_evoker.wood_sinew.muscles": "两腿",
   "advancements.meridian_evoker.cultivators.evoker.title": "五脏诀",
-  "advancements.meridian_evoker.cultivators.evoker.description": "林地府邸和袭村的队伍里，唤魔者修的是五脏诀；打倒它，「养」字那一卷就可能落下。"
+  "advancements.meridian_evoker.cultivators.evoker.description": "林地府邸和袭村的队伍里，唤魔者修的是五脏诀；打倒它，「养」字那一卷就可能落下。",
+  "advancements.meridian_evoker.cultivators.five_organs.title": "五气调和",
+  "advancements.meridian_evoker.cultivators.five_organs.description": "五脏吐纳炼化圆满，金木水火土五行之气随心附上拳脚兵刃，依生克之势破开诸般敌手。",
+  "codex.intro.meridian_evoker.five_organs": "借五禽之势将五脏之气贯入手脚、炼出五行，再将金土火水与惊雷附上拳脚。",
+  "codex.power.meridian_evoker.nourish": "借五禽之势引脏气入四肢壮其力劲，站定吐纳更可将本脏经真元炼化出五行相。",
+  "codex.power.meridian_evoker.infuse": "引动五行之气附上拳脚兵刃，生火结霜带电，顺生克之理专克偏盛之敌。"
 }

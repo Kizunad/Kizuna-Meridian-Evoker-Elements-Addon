@@ -83,5 +83,10 @@
   "effect.meridian_evoker.wood_sinew": "Sinew Stretch",
   "effect.meridian_evoker.wood_sinew.muscles": "Leg ",
   "advancements.meridian_evoker.cultivators.evoker.title": "Five Organs Art",
-  "advancements.meridian_evoker.cultivators.evoker.description": "In woodland mansions and among raiding parties, evokers practise the Five Organs Art; defeat one and its Nourish volume may fall."
+  "advancements.meridian_evoker.cultivators.evoker.description": "In woodland mansions and among raiding parties, evokers practise the Five Organs Art; defeat one and its Nourish volume may fall.",
+  "advancements.meridian_evoker.cultivators.five_organs.title": "Harmony of Five Breaths",
+  "advancements.meridian_evoker.cultivators.five_organs.description": "Visceral breathing brought to completion: the five elemental phases cling to limb and blade at will, overcoming foes by their cycle of triumph and decay.",
+  "codex.intro.meridian_evoker.five_organs": "Taking form from the five beasts to drive visceral breath into limbs, refining the five phases to coat fists and feet in metal, earth, fire, water, and wood thunder.",
+  "codex.power.meridian_evoker.nourish": "Imitate the five beasts to draw visceral breath into the limbs, steeling their sinew. Standing firm in steady breath, refine the organ meridians into the five phases.",
+  "codex.power.meridian_evoker.infuse": "Channel the five phases into fist, foot, or blade—stirring fire, frost, and wood thunder to exploit whatever element an enemy leans upon."
 }
