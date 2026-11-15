@@ -59,7 +59,7 @@ public final class EvokerCatalogTest {
     private static final double INFUSE_MOVEMENT = 0.4;
     private static final double INFUSE_QI = 0.6;
     private static final long INFUSE_WARMUP_MILLIS = 2_000;
-    private static final long INFUSE_RECOVERY_MILLIS = 1_500;
+    private static final long INFUSE_RECOVERY_MILLIS = 1_050;
     private static final long INFUSE_COOLDOWN_MILLIS = 17_000;
     private static final double INFUSE_RATIO = 0.25;
     private static final long[][] INFUSE_CURVE = {{0, 0}, {500, 1}, {15_000, 1}, {18_000, 0}};
@@ -99,11 +99,11 @@ public final class EvokerCatalogTest {
             "meridian_evoker:earth_legs",
             new Strengthen("earth", Realm.WANDERING_QI, 1, "human:leg_muscle", 0.3, 12, 2, 43_000),
             "meridian_evoker:fire_heart",
-            new Strengthen("fire", Realm.TRUE_QI, 1, "human:arm_muscle", 0.4, 20, 1.5, 16_000),
+            new Strengthen("fire", Realm.TRUE_QI, 1, "human:arm_muscle", 0.4, 20, 1.5, 16_500),
             "meridian_evoker:water_return",
             new Strengthen("water", Realm.TRUE_QI, 2, "human:leg_muscle", 0.3, 10, 2, 18_000),
             "meridian_evoker:wood_sinew",
-            new Strengthen("wood", Realm.ESSENCE_TRANSFORMATION, 1, "human:leg_muscle", 0.3, 12, 2, 22_000));
+            new Strengthen("wood", Realm.ESSENCE_TRANSFORMATION, 1, "human:leg_muscle", 0.3, 12, 2, 22_500));
 
     private static final Map<String, Refine> REFINE = Map.of(
             "meridian_evoker:refine_lung", new Refine("metal", Realm.WANDERING_QI, 2, 5),

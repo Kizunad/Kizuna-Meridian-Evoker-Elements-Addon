@@ -80,7 +80,7 @@ definitions {
   phases {
     warmup_millis: 2600
     active_millis: 0
-    recovery_millis: 2400
+    recovery_millis: 2000
     interruptible_by_damage: true
   }
   cooldown_millis: 22000
@@ -182,7 +182,7 @@ definitions {
   phases {
     warmup_millis: 3200
     active_millis: 0
-    recovery_millis: 2800
+    recovery_millis: 2000
     interruptible_by_damage: true
   }
   cooldown_millis: 43000
@@ -289,10 +289,10 @@ definitions {
   phases {
     warmup_millis: 1800
     active_millis: 0
-    recovery_millis: 2200
+    recovery_millis: 1500
     interruptible_by_damage: true
   }
-  cooldown_millis: 16000
+  cooldown_millis: 16500
   effects { at_millis: 0 presentation { id: "meridian_evoker:evoker_fire_heart" duration: UNTIL_RECOVERY_END start_millis: 0 } }
   effects {
     at_millis: 800
@@ -386,7 +386,7 @@ definitions {
   phases {
     warmup_millis: 2400
     active_millis: 0
-    recovery_millis: 2600
+    recovery_millis: 2000
     interruptible_by_damage: true
   }
   cooldown_millis: 18000
@@ -486,10 +486,10 @@ definitions {
   phases {
     warmup_millis: 2800
     active_millis: 0
-    recovery_millis: 2200
+    recovery_millis: 1500
     interruptible_by_damage: true
   }
-  cooldown_millis: 22000
+  cooldown_millis: 22500
   effects { at_millis: 0 presentation { id: "meridian_evoker:evoker_wood_sinew" duration: UNTIL_RECOVERY_END start_millis: 0 } }
   effects {
     at_millis: 2800
@@ -1479,7 +1479,7 @@ definitions {
   phases {
     warmup_millis: 2000
     active_millis: 0
-    recovery_millis: 1500
+    recovery_millis: 1050
     interruptible_by_damage: true
   }
   cooldown_millis: 17000
@@ -1582,7 +1582,7 @@ definitions {
   phases {
     warmup_millis: 2000
     active_millis: 0
-    recovery_millis: 1500
+    recovery_millis: 1050
     interruptible_by_damage: true
   }
   cooldown_millis: 17000
@@ -1686,7 +1686,7 @@ definitions {
   phases {
     warmup_millis: 2000
     active_millis: 0
-    recovery_millis: 1500
+    recovery_millis: 1050
     interruptible_by_damage: true
   }
   cooldown_millis: 17000
@@ -1804,7 +1804,7 @@ definitions {
   phases {
     warmup_millis: 2000
     active_millis: 0
-    recovery_millis: 1500
+    recovery_millis: 1050
     interruptible_by_damage: true
   }
   cooldown_millis: 17000
@@ -1922,7 +1922,7 @@ definitions {
   phases {
     warmup_millis: 2000
     active_millis: 0
-    recovery_millis: 1500
+    recovery_millis: 1050
     interruptible_by_damage: true
   }
   cooldown_millis: 17000

@@ -57,7 +57,8 @@ public final class EvokerPresentationGameTest {
 
     @GameTest
     public void everyClipMatchesItsCastTimings(GameTestHelper context) throws IOException {
-        // 剪辑一次性、长度等于起手加收势；强身、附伤的效果帧落在起手结束，炼元没有效果帧。
+        // 剪辑一次性、不比起手加收势短（收势收在身体停下来的时刻，剪辑尾上不动的那段不占施放）；
+        // 强身、附伤的效果帧落在起手结束，炼元没有效果帧。
         ModContainer animations = FabricLoader.getInstance().getModContainer(PA_MOD_ID).orElseThrow();
         List<TechniqueDefinition> definitions = definitions();
         context.assertTrue(definitions.size() == TECHNIQUES, "五脏诀式数不符：" + definitions.size());
@@ -69,8 +70,8 @@ public final class EvokerPresentationGameTest {
             long castMillis = phases.getWarmupMillis() + phases.getActiveMillis() + phases.getRecoveryMillis();
             long clipMillis = Math.round(animation.get("animation_length").getAsDouble() * MILLIS_PER_SECOND);
             context.assertTrue("false".equals(animation.get("loop").getAsString()), "剪辑不该循环：" + clip);
-            context.assertTrue(clipMillis == castMillis, "剪辑长度对不上施放：" + clip + " " + clipMillis
-                    + " ≠ " + castMillis);
+            context.assertTrue(clipMillis >= castMillis, "剪辑比施放短：" + clip + " " + clipMillis
+                    + " < " + castMillis);
             OptionalLong castFrame = castFrameMillis(animation);
             OptionalLong expected = definition.getCategory() == Category.BUFF
                     ? OptionalLong.of(phases.getWarmupMillis())
