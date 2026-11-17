@@ -24,9 +24,9 @@ public final class EvokerBundleTest {
     private static final long BATCH_MILLIS = 2_000;
     private static final double TOLERANCE = 1e-12;
     private static final Map<QiPhase, Double> RATES = Map.of(
-            QiPhase.FREE, 0.03,
-            QiPhase.GAS, 0.075,
-            QiPhase.LIQUID, 0.2);
+            QiPhase.FREE, 0.08,
+            QiPhase.GAS, 0.20,
+            QiPhase.LIQUID, 0.40);
     private static final Map<QiPhase, Realm> PHASE_REALMS = Map.of(
             QiPhase.FREE, Realm.WANDERING_QI,
             QiPhase.GAS, Realm.TRUE_QI,

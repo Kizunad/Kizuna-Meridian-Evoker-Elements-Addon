@@ -42,8 +42,8 @@ public final class EvokerRefineGameTest {
     private static final double SPLEEN_OCCUPANCY = 0.7;
     private static final double THROUGHPUT_INPUT = 2;
     private static final double FREE_BUFFER_INPUT = 1;
-    private static final double FREE_RATE = 0.03;
-    private static final double GAS_RATE = 0.075;
+    private static final double FREE_RATE = 0.08;
+    private static final double GAS_RATE = 0.20;
     private static final double TOLERANCE = 1e-9;
     private static final double LEDGER_TOLERANCE = 1e-6;
     private static final long STAGGER_MILLIS = 500;

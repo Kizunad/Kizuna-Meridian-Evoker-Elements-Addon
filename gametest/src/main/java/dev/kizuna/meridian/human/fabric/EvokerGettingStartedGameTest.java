@@ -34,7 +34,7 @@ public final class EvokerGettingStartedGameTest {
     private static final String TRUE_QI = "meridian body realm true_qi";
     private static final String SET_GAS = "meridian qi set 3000 all lumen 0.1";
     private static final String NO_GAS_IN_HEART = "左手少阴心经、右手少阴心经里没有可炼的气态真元";
-    private static final double LUNG_YIELD = 15 * 2 * 2 * 0.03;
+    private static final double LUNG_YIELD = 15 * 2 * 2 * 0.08;
     private static final double TOLERANCE = 1e-6;
     private static final int BREATHING_TICKS = 4 * 60 * SECOND;
     private static final int CAST_GAP_TICKS = 5 * SECOND;
@@ -76,7 +76,7 @@ public final class EvokerGettingStartedGameTest {
 
     @GameTest(maxTicks = TIMEOUT)
     public void metalArmsWaitsForTheLungsAfterRefining(GameTestHelper context) {
-        // 游炁 qi fill 后肺炼：两肺 15 批各 2 元按 3% 炼得 1.8 金行；收势后 1 s 两肺没有余力，第 8 s 放得出金臂。
+        // 游炁 qi fill 后肺炼：两肺 15 批各 2 元按 8% 炼得 4.8 金行；收势后 1 s 两肺没有余力，第 8 s 放得出金臂。
         EvokerTestPlayer.ready(context, fixture -> {
             run(context, fixture, FILL_FREE);
             var refine = fixture.cast("refine_lung");
@@ -197,7 +197,8 @@ public final class EvokerGettingStartedGameTest {
     @GameTest(maxTicks = SURVIVAL_TIMEOUT)
     public void survivalPathRefinesFireAndWaterWithoutClearingMeridians(GameTestHelper context) {
         // 新角色开脉后游炁自动吐纳十二分钟，游离态攒满各脉；关窗歇三分钟等脑耐力回满，开中焦自动周天、突破真炁。
-        // 突破后周天不停，把八脉里的游离态炼成气态，同时真炁吐纳二十六分钟；然后停周天，心炼放心火、肾炼放归水都要成功。
+        // 突破后周天不停，把八脉里的游离态炼成气态，同时真炁吐纳二十六分钟；然后停周天，心炼放心火、肾炼放归水都要成功
+        // （心经要是已经被吐纳留下的火行占满，就不用炼，直接放心火）。
         // 只用调试命令开脉、放候选与外壁燃料，不清空经脉。
         EvokerTestPlayer.unopened(context, fixture -> {
             run(context, fixture, OPEN_ALL);
@@ -217,7 +218,7 @@ public final class EvokerGettingStartedGameTest {
                 HumanGameTestAccess.endBreathing(fixture.player);
                 cultivate(context, fixture, CultivationInput.Operation.STOP, STOP_SEQUENCE);
                 logQi("生存路径真炁吐纳之后", fixture.settled());
-                startRefine(context, fixture, "refine_heart");
+                refineHeartIfThereIsGas(context, fixture);
             });
             EvokerTestPlayer.later(context, FIRE_TICKS, List.of(fixture), () -> {
                 assertRefined(context, fixture, Qi.QiAttribute.FIRE, FIRE_HEART_COST);
@@ -375,6 +376,20 @@ public final class EvokerGettingStartedGameTest {
         // 炼完歇过放强身，要起得了手。
         var outcome = fixture.cast(techniqueId);
         context.assertTrue(EvokerPaymentGameTest.succeeded(outcome), techniqueId + " 起手失败：" + outcome);
+    }
+
+    private static void refineHeartIfThereIsGas(GameTestHelper context, EvokerTestPlayer fixture) {
+        // 吐纳把本属性真元直接留在本行的经里。当地火行多时，火行会把心经占满，周天炼出的气态真元进不来，
+        // 心炼没有料可炼：这时不炼，只核对吐纳留下的火行已经够放一次心火。心经里有气态真元就照旧起手炼。
+        BodySnapshot body = fixture.settled();
+        if (phaseQi(body, HEART, Qi.QiPhase.GAS) > 0) {
+            startRefine(context, fixture, "refine_heart");
+            return;
+        }
+        double fire = EvokerTestPlayer.meridianQi(body, HEART, Qi.QiAttribute.FIRE);
+        context.assertTrue(fire >= FIRE_HEART_COST,
+                "心经里没有气态真元可炼，吐纳留下的火行也不够一次心火：" + fire);
+        LOGGER.info("生存路径：心经被吐纳留下的火行 {} 元占着，没有气态真元，心炼这一步跳过", fire);
     }
 
     private static void startRefine(GameTestHelper context, EvokerTestPlayer fixture, String refineId) {
