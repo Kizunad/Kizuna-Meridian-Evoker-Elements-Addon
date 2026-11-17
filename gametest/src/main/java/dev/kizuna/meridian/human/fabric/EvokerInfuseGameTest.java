@@ -15,6 +15,8 @@ import dev.kizuna.meridian.vanilla.fabric.VanillaDamageFabric;
 import dev.kizuna.meridian.vanilla.fabric.VanillaDamageTypeTags;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.Identifier;
@@ -25,6 +27,8 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -68,8 +72,12 @@ public final class EvokerInfuseGameTest {
     private static final double HIT_PITCH = 1.0;
     private static final float STRIKE = 4;
     private static final float FANG_DAMAGE = 6;
-    private static final int IGNITE_TICKS = 20;
-    private static final int FREEZE_TICKS = 50;
+    private static final int BURN_TICKS = 20;
+    private static final int CHILL_TICKS = 25;
+    private static final String BURN = "meridian_vanilla_damage:burn";
+    private static final String CHILL = "meridian_vanilla_damage:chill";
+    private static final long MILLIS_PER_TICK = 50;
+    private static final int ICON_TOLERANCE_TICKS = 2;
     private static final double MAIN_KNOCKBACK = 0.4;
     private static final double EXTRA_KNOCKBACK = 0.3;
     private static final int COW_DISTANCE = 3;
@@ -164,12 +172,14 @@ public final class EvokerInfuseGameTest {
             EvokerTestPlayer caster = castOn(context, players.getFirst(), FIRE);
             EvokerTestPlayer.later(context, BEFORE_INFUSION_TICKS, players, () -> {
                 context.assertTrue(remainingMillis(caster) == 0, "起手还没结束就有附行");
+                context.assertTrue(icon(caster, FIRE) == null, "起手还没结束就挂了附行图标");
                 LivingEntity early = players.get(1).player;
                 fang(context, caster.player, early);
                 context.assertTrue(events(early).size() == 1, "起手结束前的尖牙带了附伤");
                 // 同一用例只留一条回调链：并排的两条会让后一条晚一两 tick，爬坡上的剂量就对不上。
                 EvokerTestPlayer.later(context, RAMP_TICKS - BEFORE_INFUSION_TICKS, players, () -> {
                     context.assertTrue(remainingMillis(caster) > 0, "起手结束后没有附行");
+                    assertIconMatchesInfusion(context, caster, FIRE);
                     LivingEntity late = players.get(2).player;
                     fang(context, caster.player, late);
                     assertInfusion(context, late, FIRE, FANG_DAMAGE * RATIO * RAMP_VALUE);
@@ -211,6 +221,7 @@ public final class EvokerInfuseGameTest {
                         "受击没有打断寒水起手：" + interrupted);
                 EvokerTestPlayer.later(context, PLATEAU_TICKS - STAGGER_TICKS, players, () -> {
                     context.assertTrue(remainingMillis(caster) == 0, "被打断的起手仍写了附行");
+                    context.assertTrue(icon(caster, WATER) == null, "被打断的起手挂了附行图标");
                     LivingEntity target = players.get(1).player;
                     fang(context, caster.player, target);
                     context.assertTrue(events(target).size() == 1, "被打断后尖牙仍带附伤");
@@ -222,7 +233,7 @@ public final class EvokerInfuseGameTest {
 
     @GameTest(maxTicks = TIMEOUT)
     public void laterInfusionReplacesTheEarlierOne(GameTestHelper context) {
-        // 灼火放完再放寒水：下一击只带一记寒冷，冻结不点火。
+        // 灼火放完再放寒水：灼火的图标换成寒水的；下一击只带一记寒冷，挂寒侵不挂灼伤。
         EvokerTestPlayer.readyInfuse(context, 2, players -> {
             EvokerTestPlayer caster = players.getFirst();
             charge(caster, WATER, EvokerTestPlayer.GAS_DENSITY);
@@ -234,11 +245,49 @@ public final class EvokerInfuseGameTest {
                     LivingEntity target = players.get(1).player;
                     fang(context, caster.player, target);
                     assertInfusion(context, target, WATER, FANG_DAMAGE * RATIO);
-                    context.assertTrue(target.getTicksFrozen() == FREEZE_TICKS && target.getRemainingFireTicks() <= 0,
-                            "后放的寒水没有覆盖灼火：冻结 " + target.getTicksFrozen() + " 着火 "
-                                    + target.getRemainingFireTicks());
+                    context.assertTrue(icon(caster, FIRE) == null, "换了寒水，灼火的图标还在");
+                    assertIconMatchesInfusion(context, caster, WATER);
+                    context.assertTrue(duration(target, CHILL) == CHILL_TICKS && duration(target, BURN) == 0,
+                            "后放的寒水没有覆盖灼火：寒侵 " + duration(target, CHILL) + " 灼伤 " + duration(target, BURN));
+                    context.assertTrue(target.getTicksFrozen() == 0 && target.getRemainingFireTicks() <= 0,
+                            "附带不该再动冻结刻和着火刻");
                     EvokerTestPlayer.finish(context, players);
                 });
+            });
+        });
+    }
+
+    @GameTest(maxTicks = TIMEOUT)
+    public void clearingTheIconEndsTheInfusion(GameTestHelper context) {
+        // 牛奶、/effect clear 把图标清掉：附行跟着结束，不留下看不见的附行，之后的尖牙不带附伤。
+        EvokerTestPlayer.readyInfuse(context, 2, players -> {
+            EvokerTestPlayer caster = castOn(context, players.getFirst(), FIRE);
+            EvokerTestPlayer.later(context, PLATEAU_TICKS, players, () -> {
+                assertIconMatchesInfusion(context, caster, FIRE);
+                caster.player.removeAllEffects();
+                context.assertTrue(icon(caster, FIRE) == null, "清效果以后图标还在");
+                context.assertTrue(remainingMillis(caster) == 0, "图标清掉了，附行还在：" + remainingMillis(caster));
+                LivingEntity target = players.get(1).player;
+                fang(context, caster.player, target);
+                context.assertTrue(events(target).size() == 1, "图标清掉以后尖牙仍带附伤");
+                EvokerTestPlayer.finish(context, players);
+            });
+        });
+    }
+
+    @GameTest(maxTicks = TIMEOUT)
+    public void theIconOnlyComesFromAnInfusion(GameTestHelper context) {
+        // 别处直接给附行图标（/effect give 走的就是这个入口）不收：没有附行时不收，有别的附行时也不收，原来的图标不受影响。
+        EvokerTestPlayer.readyInfuse(context, 1, players -> {
+            EvokerTestPlayer caster = players.getFirst();
+            var faked = new MobEffectInstance(effect(statusId(FIRE)), TIMEOUT);
+            context.assertTrue(!caster.player.addEffect(faked) && icon(caster, FIRE) == null, "没有附行也能给出附行图标");
+            castOn(context, caster, WATER);
+            EvokerTestPlayer.later(context, PLATEAU_TICKS, players, () -> {
+                context.assertTrue(!caster.player.addEffect(new MobEffectInstance(faked)) && icon(caster, FIRE) == null,
+                        "身上是寒水，却能再给出灼火的图标");
+                assertIconMatchesInfusion(context, caster, WATER);
+                EvokerTestPlayer.finish(context, players);
             });
         });
     }
@@ -250,6 +299,7 @@ public final class EvokerInfuseGameTest {
             EvokerTestPlayer caster = castOn(context, players.getFirst(), METAL);
             EvokerTestPlayer.later(context, EXPIRED_TICKS, players, () -> {
                 context.assertTrue(remainingMillis(caster) == 0, "附行 18 s 后没有到期：" + remainingMillis(caster));
+                context.assertTrue(icon(caster, METAL) == null, "附行到期了，图标还在");
                 LivingEntity target = players.get(1).player;
                 fang(context, caster.player, target);
                 context.assertTrue(events(target).size() == 1, "附行到期后尖牙仍带附伤");
@@ -265,11 +315,13 @@ public final class EvokerInfuseGameTest {
             EvokerTestPlayer caster = castOn(context, players.getFirst(), FIRE);
             EvokerTestPlayer.later(context, PLATEAU_TICKS, players, () -> {
                 context.assertTrue(remainingMillis(caster) > 0, "死前没有附行");
+                assertIconMatchesInfusion(context, caster, FIRE);
                 caster.kill();
                 context.assertTrue(caster.body().snapshot().vitality().dead(), "致死伤害没有记到身体");
                 context.assertTrue(remainingMillis(caster) == 0, "身体死亡后附行仍在");
                 ServerPlayer revived = caster.respawn();
                 context.assertTrue(remainingMillis(caster) == 0, "重生后又有附行");
+                context.assertTrue(revived.getEffect(effect(statusId(FIRE))) == null, "重生后还带着附行图标");
                 Mob cow = cow(context, revived);
                 float health = cow.getHealth();
                 fang(context, revived, cow);
@@ -281,7 +333,7 @@ public final class EvokerInfuseGameTest {
 
     @GameTest(maxTicks = TIMEOUT)
     public void playerMeleeInfusesTheSamePartOfAnotherPlayer(GameTestHelper context) {
-        // 玩家近战打第二个测试玩家：附伤落在主击同一部位，记在施放者名下，并点着目标。
+        // 玩家近战打第二个测试玩家：附伤落在主击同一部位，记在施放者名下，并给目标挂上灼伤。
         EvokerTestPlayer.readyInfuse(context, 2, players -> {
             EvokerTestPlayer caster = castOn(context, players.getFirst(), FIRE);
             EvokerTestPlayer.later(context, PLATEAU_TICKS, players, () -> {
@@ -290,8 +342,8 @@ public final class EvokerInfuseGameTest {
                         STRIKE);
                 var infusion = assertInfusion(context, target, FIRE, STRIKE * RATIO);
                 context.assertTrue(infusion.source().getDirectEntity() == caster.player, "近战附伤的直接实体不是施放者");
-                context.assertTrue(target.getRemainingFireTicks() == IGNITE_TICKS,
-                        "灼火附伤没有点着目标：" + target.getRemainingFireTicks());
+                context.assertTrue(duration(target, BURN) == BURN_TICKS && target.getRemainingFireTicks() <= 0,
+                        "灼火附伤要给目标挂灼伤、不点着：" + duration(target, BURN) + " / " + target.getRemainingFireTicks());
                 EvokerTestPlayer.finish(context, players);
             });
         });
@@ -299,7 +351,7 @@ public final class EvokerInfuseGameTest {
 
     @GameTest(maxTicks = TIMEOUT)
     public void metalEdgeAddsNoVanillaExtras(GameTestHelper context) {
-        // 锐金只有切割附伤，不点火、不冻结、不追加击退。
+        // 锐金只有切割附伤，不灼伤、不寒侵、不追加击退。
         extras(context, METAL, cow -> assertExtras(context, cow, 0, 0, MAIN_KNOCKBACK));
     }
 
@@ -310,20 +362,20 @@ public final class EvokerInfuseGameTest {
     }
 
     @GameTest(maxTicks = TIMEOUT)
-    public void fireBurnIgnitesTheTarget(GameTestHelper context) {
-        // 灼火点火 20 刻。
-        extras(context, FIRE, cow -> assertExtras(context, cow, IGNITE_TICKS, 0, MAIN_KNOCKBACK));
+    public void fireBurnScaldsTheTarget(GameTestHelper context) {
+        // 灼火给目标挂 20 tick 灼伤，不点着。
+        extras(context, FIRE, cow -> assertExtras(context, cow, BURN_TICKS, 0, MAIN_KNOCKBACK));
     }
 
     @GameTest(maxTicks = TIMEOUT)
-    public void waterFrostFreezesTheTarget(GameTestHelper context) {
-        // 寒水冻结 +50 刻。
-        extras(context, WATER, cow -> assertExtras(context, cow, 0, FREEZE_TICKS, MAIN_KNOCKBACK));
+    public void waterFrostChillsTheTarget(GameTestHelper context) {
+        // 寒水给目标加 25 tick 寒侵，不加冻结刻。
+        extras(context, WATER, cow -> assertExtras(context, cow, 0, CHILL_TICKS, MAIN_KNOCKBACK));
     }
 
     @GameTest(maxTicks = TIMEOUT)
     public void woodThunderAddsNoVanillaExtras(GameTestHelper context) {
-        // 惊雷只有雷电附伤，没有原版附带。
+        // 惊雷只有雷电附伤，没有附带。
         extras(context, WOOD, cow -> assertExtras(context, cow, 0, 0, MAIN_KNOCKBACK));
     }
 
@@ -454,12 +506,51 @@ public final class EvokerInfuseGameTest {
         });
     }
 
-    private static void assertExtras(GameTestHelper context, Mob cow, int fireTicks, int frozenTicks, double speed) {
-        // 着火刻、冻结刻和水平速度（主击原版击退加追加击退）。
-        context.assertTrue(Math.max(cow.getRemainingFireTicks(), 0) == fireTicks,
-                "着火刻不符：" + cow.getRemainingFireTicks());
-        context.assertTrue(cow.getTicksFrozen() == frozenTicks, "冻结刻不符：" + cow.getTicksFrozen());
+    private static void assertExtras(GameTestHelper context, Mob cow, int burnTicks, int chillTicks, double speed) {
+        // 灼伤、寒侵的时长和水平速度（主击原版击退加追加击退）；原版的着火刻、冻结刻一律不动；两个状态都不出粒子。
+        context.assertTrue(duration(cow, BURN) == burnTicks, "灼伤时长不符：" + duration(cow, BURN));
+        context.assertTrue(duration(cow, CHILL) == chillTicks, "寒侵时长不符：" + duration(cow, CHILL));
+        context.assertTrue(cow.getRemainingFireTicks() <= 0 && cow.getTicksFrozen() == 0,
+                "附带动了着火刻或冻结刻：" + cow.getRemainingFireTicks() + " / " + cow.getTicksFrozen());
+        context.assertTrue(cow.getActiveEffects().stream().noneMatch(MobEffectInstance::isVisible), "附带的状态出了粒子");
         assertClose(context, cow.getDeltaMovement().horizontalDistance(), speed, "击退速度不符");
+    }
+
+    private static String statusId(Element element) {
+        // 附行图标的身份和式的 ID 同名。
+        return NAMESPACE + ":" + element.technique();
+    }
+
+    private static Holder<MobEffect> effect(String id) {
+        // 状态效果按 ID 从注册表取，测试不编译依赖注册它的类。
+        return BuiltInRegistries.MOB_EFFECT.get(Identifier.parse(id)).orElseThrow();
+    }
+
+    private static MobEffectInstance icon(EvokerTestPlayer fixture, Element element) {
+        // 施放者身上这一行的附行图标，没有为 null。
+        return fixture.player.getEffect(effect(statusId(element)));
+    }
+
+    private static int duration(LivingEntity entity, String effectId) {
+        // 身上某个状态还剩多少 tick，没有算 0。
+        MobEffectInstance instance = entity.getEffect(effect(effectId));
+        if (instance == null) {
+            return 0;
+        }
+        return instance.getDuration();
+    }
+
+    private static void assertIconMatchesInfusion(GameTestHelper context, EvokerTestPlayer fixture, Element element) {
+        // 图标在、不出粒子、有图标，倒计时和附行剩余时间对得上（差不过两 tick）；别的行的图标不在。
+        MobEffectInstance instance = icon(fixture, element);
+        context.assertTrue(instance != null, element.name() + " 附行生效了，身上没有它的图标");
+        context.assertTrue(!instance.isVisible() && instance.showIcon(), "附行图标要不出粒子、有图标");
+        long remainingTicks = remainingMillis(fixture) / MILLIS_PER_TICK;
+        context.assertTrue(Math.abs(instance.getDuration() - remainingTicks) <= ICON_TOLERANCE_TICKS,
+                "图标倒计时 " + instance.getDuration() + " tick 和附行剩余 " + remainingTicks + " tick 对不上");
+        for (Element other : KINDS.values()) {
+            context.assertTrue(other == element || icon(fixture, other) == null, "身上同时有两个附行图标");
+        }
     }
 
     private static void castSounds(GameTestHelper context, Element element) {

@@ -1503,6 +1503,7 @@ definitions {
     elemental_infusion {
       attribute: "meridian:metal"
       damage_type_id: "meridian_evoker:metal"
+      status { id: "meridian_evoker:metal_edge" color_rgb: 13225686 }
       ratio { value: 0.25 unit: RATIO }
       curve { offset_millis: 0 value: 0 }
       curve { offset_millis: 500 value: 1 }
@@ -1606,6 +1607,7 @@ definitions {
     elemental_infusion {
       attribute: "meridian:earth"
       damage_type_id: "meridian_evoker:earth"
+      status { id: "meridian_evoker:earth_quake" color_rgb: 12749381 }
       ratio { value: 0.25 unit: RATIO }
       curve { offset_millis: 0 value: 0 }
       curve { offset_millis: 500 value: 1 }
@@ -1724,12 +1726,14 @@ definitions {
     elemental_infusion {
       attribute: "meridian:fire"
       damage_type_id: "meridian_evoker:fire"
+      status { id: "meridian_evoker:fire_burn" color_rgb: 14828843 }
       ratio { value: 0.25 unit: RATIO }
       curve { offset_millis: 0 value: 0 }
       curve { offset_millis: 500 value: 1 }
       curve { offset_millis: 15000 value: 1 }
       curve { offset_millis: 18000 value: 0 }
-      ignite_ticks: 20
+      burn_ticks: 20
+      burn_damage { value: 0.5 unit: DAMAGE_POINT }
       counters { target_attribute: "meridian:metal"
         damage_multiplier { value: 1.5 unit: RATIO }
         sound_volume_multiplier { value: 1.5 unit: RATIO } }
@@ -1763,7 +1767,7 @@ definitions {
       refresh_before_expiry_millis: 3000
     }
   }
-  presentation { icon_id: "meridian_evoker:fire_burn" display_name: "灼火" description: "搓掌吹火，心火附上拳脚；此后每一击另带一记灼热，并点着目标。「火炽金熔，水灭火熄」：附上的这一记，打在金行偏盛的人身上重一半、声更响；遇水行偏盛的人只剩一半，声音发轻发尖。" }
+  presentation { icon_id: "meridian_evoker:fire_burn" display_name: "灼火" description: "搓掌吹火，心火附上拳脚；此后每一击另带一记灼热，火气留在伤处再伤一阵。「火炽金熔，水灭火熄」：附上的这一记，打在金行偏盛的人身上重一半、声更响；遇水行偏盛的人只剩一半，声音发轻发尖。" }
 }
 definitions {
   id: "meridian_evoker:water_frost"
@@ -1842,12 +1846,13 @@ definitions {
     elemental_infusion {
       attribute: "meridian:water"
       damage_type_id: "meridian_evoker:water"
+      status { id: "meridian_evoker:water_frost" color_rgb: 3108560 }
       ratio { value: 0.25 unit: RATIO }
       curve { offset_millis: 0 value: 0 }
       curve { offset_millis: 500 value: 1 }
       curve { offset_millis: 15000 value: 1 }
       curve { offset_millis: 18000 value: 0 }
-      freeze_ticks: 50
+      chill_ticks: 25
       counters { target_attribute: "meridian:fire"
         damage_multiplier { value: 1.5 unit: RATIO }
         sound_volume_multiplier { value: 1.5 unit: RATIO } }
@@ -1881,7 +1886,7 @@ definitions {
       refresh_before_expiry_millis: 3000
     }
   }
-  presentation { icon_id: "meridian_evoker:water_frost" display_name: "寒水" description: "交替按浪，肾水寒气附上拳脚；此后每一击另带一记寒冷，并让目标结霜。「水息烈火，土掩流泉」：附上的这一记，打在火行偏盛的人身上重一半、声更响；遇土行偏盛的人只剩一半，声音发轻发尖。" }
+  presentation { icon_id: "meridian_evoker:water_frost" display_name: "寒水" description: "交替按浪，肾水寒气附上拳脚；此后每一击另带一记寒冷，寒气入体，脚步变慢。「水息烈火，土掩流泉」：附上的这一记，打在火行偏盛的人身上重一半、声更响；遇土行偏盛的人只剩一半，声音发轻发尖。" }
 }
 definitions {
   id: "meridian_evoker:wood_thunder"
@@ -1953,6 +1958,7 @@ definitions {
     elemental_infusion {
       attribute: "meridian:wood"
       damage_type_id: "meridian_evoker:wood"
+      status { id: "meridian_evoker:wood_thunder" color_rgb: 5219642 }
       ratio { value: 0.25 unit: RATIO }
       curve { offset_millis: 0 value: 0 }
       curve { offset_millis: 500 value: 1 }

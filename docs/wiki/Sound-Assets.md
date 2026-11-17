@@ -100,3 +100,7 @@
 `assets/meridian_evoker/textures/mob_effect/` 下的五张 18 × 18 RGBA 图标是占位素材，
 经 CPA（`cliproxy` 后端）用 `gpt-image-2.5-sunburst` 生成 1024 × 1024 原稿，
 再最近邻缩到 18 × 18、透明度以 128 为界二值化、无抖动 12 色调色板。
+
+中卷「附」五式的附行图标（`metal_edge`、`earth_quake`、`fire_burn`、`water_frost`、`wood_thunder`）来源相同，也是占位素材。
+提示词只让画一个大块的主体（刃尖、裂石、火苗、冰棱、电光），细线和小零件缩到 18 × 18 会糊。
+后处理多一步：先按不透明的范围裁紧、补成正方形，再最近邻缩小，其余同上。

@@ -67,9 +67,9 @@
   "technique.meridian_evoker.earth_quake": "Earth Quake",
   "technique.meridian_evoker.earth_quake.note": "needs Earth qi at gas phase or denser; while infused every hit adds a blunt strike and pushes the target further",
   "technique.meridian_evoker.fire_burn": "Fire Burn",
-  "technique.meridian_evoker.fire_burn.note": "needs Fire qi at gas phase or denser; while infused every hit adds a searing strike and sets the target alight",
+  "technique.meridian_evoker.fire_burn.note": "needs Fire qi at gas phase or denser; while infused every hit adds a searing strike, and the heat lingers in the wound to hurt again",
   "technique.meridian_evoker.water_frost": "Water Frost",
-  "technique.meridian_evoker.water_frost.note": "needs Water qi at gas phase or denser; while infused every hit adds a chilling strike and frosts the target",
+  "technique.meridian_evoker.water_frost.note": "needs Water qi at gas phase or denser; while infused every hit adds a chilling strike, and the cold slows the target",
   "technique.meridian_evoker.wood_thunder": "Wood Thunder",
   "technique.meridian_evoker.wood_thunder.note": "out of reach for now (needs the realm above True Qi); needs Wood qi at gas phase or denser; while infused every hit adds a shocking strike",
   "effect.meridian_evoker.metal_arms": "Metal Arms",
@@ -88,5 +88,10 @@
   "advancements.meridian_evoker.cultivators.five_organs.description": "Visceral breathing brought to completion: the five elemental phases cling to limb and blade at will, overcoming foes by their cycle of triumph and decay.",
   "codex.intro.meridian_evoker.five_organs": "Taking form from the five beasts to drive visceral breath into limbs, refining the five phases to coat fists and feet in metal, earth, fire, water, and wood thunder.",
   "codex.power.meridian_evoker.nourish": "Imitate the five beasts to draw visceral breath into the limbs, steeling their sinew. Standing firm in steady breath, refine the organ meridians into the five phases.",
-  "codex.power.meridian_evoker.infuse": "Channel the five phases into fist, foot, or blade—stirring fire, frost, and wood thunder to exploit whatever element an enemy leans upon."
+  "codex.power.meridian_evoker.infuse": "Channel the five phases into fist, foot, or blade—stirring fire, frost, and wood thunder to exploit whatever element an enemy leans upon.",
+  "effect.meridian_evoker.metal_edge": "Metal Edge",
+  "effect.meridian_evoker.earth_quake": "Earth Quake",
+  "effect.meridian_evoker.fire_burn": "Fire Burn",
+  "effect.meridian_evoker.water_frost": "Water Frost",
+  "effect.meridian_evoker.wood_thunder": "Wood Thunder"
 }

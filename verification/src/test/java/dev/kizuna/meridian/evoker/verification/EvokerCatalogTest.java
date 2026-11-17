@@ -62,6 +62,10 @@ public final class EvokerCatalogTest {
     private static final long INFUSE_RECOVERY_MILLIS = 1_050;
     private static final long INFUSE_COOLDOWN_MILLIS = 17_000;
     private static final double INFUSE_RATIO = 0.25;
+    private static final double BURN_DAMAGE_HP = 0.5;
+    /** 附行图标的颜色：和同一行强身式的状态图标同色。 */
+    private static final Map<String, Integer> STATUS_COLORS = Map.of(
+            "metal", 13225686, "earth", 12749381, "fire", 14828843, "water", 3108560, "wood", 5219642);
     private static final long[][] INFUSE_CURVE = {{0, 0}, {500, 1}, {15_000, 1}, {18_000, 0}};
     private static final double WIN_DAMAGE = 1.5;
     private static final double WIN_VOLUME = 1.5;
@@ -88,9 +92,9 @@ public final class EvokerCatalogTest {
     private record Refine(String element, Realm realm, int zang, double watts) {
     }
 
-    /** 附伤一式：行、最低境界、本脏数、本脏功率与时长、点火刻、冻结刻、追加击退、命中声音量与音高。 */
-    private record Infuse(String element, Realm realm, int zang, double watts, double seconds, int igniteTicks,
-                          int freezeTicks, double knockback, double hitVolume, double hitPitch) {
+    /** 附伤一式：行、最低境界、本脏数、本脏功率与时长、灼伤刻、寒侵刻、追加击退、命中声音量与音高。 */
+    private record Infuse(String element, Realm realm, int zang, double watts, double seconds, int burnTicks,
+                          int chillTicks, double knockback, double hitVolume, double hitPitch) {
     }
 
     private static final Map<String, Strengthen> STRENGTHEN = Map.of(
@@ -120,7 +124,7 @@ public final class EvokerCatalogTest {
             "meridian_evoker:fire_burn",
             new Infuse("fire", Realm.TRUE_QI, 1, 25, 1.5, 20, 0, 0, 0.5, 1.0),
             "meridian_evoker:water_frost",
-            new Infuse("water", Realm.TRUE_QI, 2, 12, 2, 0, 50, 0, 0.5, 1.0),
+            new Infuse("water", Realm.TRUE_QI, 2, 12, 2, 0, 25, 0, 0.5, 1.0),
             "meridian_evoker:wood_thunder",
             new Infuse("wood", Realm.ESSENCE_TRANSFORMATION, 1, 16, 2, 0, 0, 0, 0.2, 2.0));
 
@@ -271,8 +275,16 @@ public final class EvokerCatalogTest {
             assertEquals(INFUSE_CURVE[index][0], point.getOffsetMillis());
             assertEquals(INFUSE_CURVE[index][1], point.getValue(), TOLERANCE);
         }
-        assertEquals(expected.igniteTicks(), infusion.getIgniteTicks());
-        assertEquals(expected.freezeTicks(), infusion.getFreezeTicks());
+        assertEquals(expected.burnTicks(), infusion.getBurnTicks());
+        assertEquals(expected.chillTicks(), infusion.getChillTicks());
+        // 只有灼火带灼伤：一次 20 tick 一共掉 1 HP。
+        assertEquals(expected.burnTicks() > 0, infusion.hasBurnDamage());
+        if (infusion.hasBurnDamage()) {
+            assertEquals(BURN_DAMAGE_HP, infusion.getBurnDamage().getValue(), TOLERANCE);
+        }
+        // 附行图标的身份和式同名，颜色用同一行强身式图标的颜色。
+        assertEquals(definition.getId(), infusion.getStatus().getId());
+        assertEquals(STATUS_COLORS.get(expected.element()).intValue(), infusion.getStatus().getColorRgb());
         assertEquals(expected.knockback(), infusion.getExtraKnockback().getValue(), TOLERANCE);
         assertCounters(infusion, expected.element());
         SoundCue hit = infusion.getHitSound();

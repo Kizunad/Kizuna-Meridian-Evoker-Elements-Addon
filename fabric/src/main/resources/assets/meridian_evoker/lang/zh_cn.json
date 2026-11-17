@@ -67,9 +67,9 @@
   "technique.meridian_evoker.earth_quake": "震土",
   "technique.meridian_evoker.earth_quake.note": "要气态的土行真元；附行期间每一击另带一记钝击，并把目标多推开一些",
   "technique.meridian_evoker.fire_burn": "灼火",
-  "technique.meridian_evoker.fire_burn.note": "要气态的火行真元；附行期间每一击另带一记灼热，并点着目标",
+  "technique.meridian_evoker.fire_burn.note": "要气态的火行真元；附行期间每一击另带一记灼热，火气留在伤处再伤一阵",
   "technique.meridian_evoker.water_frost": "寒水",
-  "technique.meridian_evoker.water_frost.note": "要气态的水行真元；附行期间每一击另带一记寒冷，并让目标结霜",
+  "technique.meridian_evoker.water_frost.note": "要气态的水行真元；附行期间每一击另带一记寒冷，寒气入体，脚步变慢",
   "technique.meridian_evoker.wood_thunder": "惊雷",
   "technique.meridian_evoker.wood_thunder.note": "尚不可及（要化元境界）；要气态的木行真元；附行期间每一击另带一记电击",
   "effect.meridian_evoker.metal_arms": "金臂",
@@ -88,5 +88,10 @@
   "advancements.meridian_evoker.cultivators.five_organs.description": "五脏吐纳炼化圆满，金木水火土五行之气随心附上拳脚兵刃，依生克之势破开诸般敌手。",
   "codex.intro.meridian_evoker.five_organs": "借五禽之势将五脏之气贯入手脚、炼出五行，再将金土火水与惊雷附上拳脚。",
   "codex.power.meridian_evoker.nourish": "借五禽之势引脏气入四肢壮其力劲，站定吐纳更可将本脏经真元炼化出五行相。",
-  "codex.power.meridian_evoker.infuse": "引动五行之气附上拳脚兵刃，生火结霜带电，顺生克之理专克偏盛之敌。"
+  "codex.power.meridian_evoker.infuse": "引动五行之气附上拳脚兵刃，生火结霜带电，顺生克之理专克偏盛之敌。",
+  "effect.meridian_evoker.metal_edge": "锐金",
+  "effect.meridian_evoker.earth_quake": "震土",
+  "effect.meridian_evoker.fire_burn": "灼火",
+  "effect.meridian_evoker.water_frost": "寒水",
+  "effect.meridian_evoker.wood_thunder": "惊雷"
 }
