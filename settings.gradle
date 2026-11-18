@@ -11,6 +11,10 @@ apply from: new File(rootDir.parentFile, 'Kizuna-Meridian-Mod-Framework/scripts/
 rootProject.name = 'kizuna-meridian-evoker-elements-addon'
 include 'shared', 'fabric', 'verification', 'gametest', 'clienttest'
 
+// 客户端走查按图标实际格位悬停；在嵌套组合前统一登记窗口框架两端的坐标。
+kizunaWorkspace.includeSource('inventory-ui', ['': 'dev.kizuna.inventoryui:kizuna-inventory-ui-framework',
+        server: 'dev.kizuna.inventoryui:server'])
+
 // 导出工具、目录验证与 GameTest 直接使用相邻仓库的当前源码。local.meridian 是框架的本地替换键；
 // GameTest 按坐标装入 Human 等模组时 Loom 以框架真实坐标重新加入其传递库，所以真实坐标也登记替换。
 kizunaWorkspace.includeSource('framework', [

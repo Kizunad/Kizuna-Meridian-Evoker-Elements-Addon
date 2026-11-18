@@ -9,11 +9,13 @@ dependencies {
     implementation libs.fabric.api
     // 正式数据包按安装 JAR 装入，和 GameTest 一样验证发行包自己的资源。
     localRuntime files(rootProject.project(':fabric').tasks.named('jar'))
-    // 走查要点吐纳窗口里的真实按钮：窗口、组件、修炼授权与吐纳视图的类型取 UI、Inventory UI、Progression 已构建的 JAR
+    // 图标悬停直接读取窗口框架的当前布局；功法状态用于核对附加说明接线。
+    implementation 'dev.kizuna.inventoryui:kizuna-inventory-ui-framework'
+    implementation 'dev.kizuna.meridian.technique:fabric'
+    // 走查要点吐纳窗口里的真实按钮：窗口、组件、修炼授权与吐纳视图的类型取 UI、Progression 已构建的 JAR
     // 和组合进来的 Framework 编译，运行仍由完整装配装入一次。
     compileOnly libs.owo
     compileOnly files(kizunaWorkspace.artifact('ui', 'client', false),
-            kizunaWorkspace.artifact('inventory-ui', '', false),
             kizunaWorkspace.artifact('progression', 'client', false))
     compileOnly 'local.meridian:server'
 }

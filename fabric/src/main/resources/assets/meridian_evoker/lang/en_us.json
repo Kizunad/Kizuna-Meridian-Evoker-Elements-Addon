@@ -93,5 +93,6 @@
   "effect.meridian_evoker.earth_quake": "Earth Quake",
   "effect.meridian_evoker.fire_burn": "Fire Burn",
   "effect.meridian_evoker.water_frost": "Water Frost",
-  "effect.meridian_evoker.wood_thunder": "Wood Thunder"
+  "effect.meridian_evoker.wood_thunder": "Wood Thunder",
+  "status_group.meridian_evoker.infusion": "Infusions"
 }

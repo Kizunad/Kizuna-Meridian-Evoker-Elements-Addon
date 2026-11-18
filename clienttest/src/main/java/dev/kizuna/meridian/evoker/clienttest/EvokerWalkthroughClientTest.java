@@ -8,8 +8,14 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContex
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 import dev.kizuna.inventoryui.client.ClientModule;
 import dev.kizuna.inventoryui.client.InventoryUiClient;
+import dev.kizuna.inventoryui.client.status.StatusIcons;
+import dev.kizuna.inventoryui.client.status.StatusLayout;
+import dev.kizuna.inventoryui.status.StatusArrangement.Single;
 import dev.kizuna.meridian.evoker.clienttest.mixin.ContainerScreenAccess;
+import dev.kizuna.meridian.evoker.clienttest.mixin.StatusNotesAccess;
 import dev.kizuna.meridian.progression.client.ClientProgression;
+import dev.kizuna.meridian.technique.fabric.client.TechniqueEffectTooltips;
+import dev.kizuna.meridian.technique.fabric.world.TechniqueStatusBenefits;
 import dev.kizuna.meridian.ui.client.BodyUiModule;
 import dev.kizuna.meridian.ui.client.CultivationPanel;
 import io.wispforest.owo.ui.core.UIComponent;
@@ -25,7 +31,7 @@ import org.lwjgl.glfw.GLFW;
 
 /**
  * 照 Wiki「五脏诀上手」在一个新世界里走一遍，每步截图：卷轴提示、右键学卷、经脉未通、真元不够、肺炼、收势后两肺没有余力、
- * 歇过放金臂、背包效果栏的金臂说明、游炁放心火被拒、改境界到真炁并清空内腔后心炼起手被拒、一分钟后再清一次、开自动吐纳、
+ * 歇过放金臂、背包状态图标的金臂说明、游炁放心火被拒、改境界到真炁并清空内腔后心炼起手被拒、一分钟后再清一次、开自动吐纳、
  * 吐纳窗口里的游离态与气态、关窗后心炼、心火说明，再肾炼、放归水（炼出的水行留在肾经）、归水说明。
  * 命令都走服务端，和玩家在聊天栏输入的相同；进架势和放招按真实按键（R 与数字键），吐纳窗口的复选框和按钮按真实光标点击。
  * 截图写到运行目录 {@code screenshots/}。
@@ -42,8 +48,6 @@ public final class EvokerWalkthroughClientTest implements FabricClientGameTest {
     private static final int REST_TICKS = 9 * 20;
     private static final int STATUS_TICKS = 80;
     private static final int SLOT_CENTER = 8;
-    private static final int EFFECT_GAP = 2;
-    private static final int EFFECT_HOVER = 16;
     private static final int BREATHING_TICKS = 4 * 60 * 20;
     private static final int CLEAR_AGAIN_TICKS = 60 * 20;
     private static final double IDLE_CURSOR_X = WINDOW_WIDTH * 0.85;
@@ -55,6 +59,7 @@ public final class EvokerWalkthroughClientTest implements FabricClientGameTest {
 
     @Override
     public void runTest(ClientGameTestContext context) {
+        // 在真实完整装配里按操作顺序走查，图标与窗口都从当前客户端读取。
         context.getInput().resizeWindow(WINDOW_WIDTH, WINDOW_HEIGHT);
         try (TestSingleplayerContext world = context.worldBuilder().create()) {
             world.getConnection().waitForChunksRender();
@@ -94,7 +99,7 @@ public final class EvokerWalkthroughClientTest implements FabricClientGameTest {
     }
 
     private static void metalArms(ClientGameTestContext context, TestSingleplayerContext world) {
-        // 设槽、进架势后先被拒两次（经脉未通、金行真元不够），再开脉补元、肺炼、金臂，最后在背包效果栏看金臂说明。
+        // 设槽、进架势后先被拒两次，再开脉补元、肺炼、金臂，最后在背包状态图标上看金臂说明。
         command(world, "execute as @a run meridian combat slot set 1 " + BOOK + "refine_lung");
         command(world, "execute as @a run meridian combat slot set 2 " + BOOK + "metal_arms");
         command(world, "execute as @a run meridian combat slot set 3 " + BOOK + "fire_heart");
@@ -119,7 +124,7 @@ public final class EvokerWalkthroughClientTest implements FabricClientGameTest {
         cast(context, 1);
         context.waitTicks(STATUS_TICKS);
         shoot(context, "07_metal_arms_cast");
-        effectTooltip(context, "08_metal_arms_effect_tooltip");
+        effectTooltip(context, BOOK + "metal_arms", "08_metal_arms_effect_tooltip");
     }
 
     private static void fireLine(ClientGameTestContext context, TestSingleplayerContext world) {
@@ -143,7 +148,7 @@ public final class EvokerWalkthroughClientTest implements FabricClientGameTest {
         shoot(context, "14a_fire_heart_pressed");
         context.waitTicks(STATUS_TICKS);
         shoot(context, "14_fire_heart_cast");
-        effectTooltip(context, "15_fire_heart_effect_tooltip");
+        effectTooltip(context, BOOK + "fire_heart", "15_fire_heart_effect_tooltip");
     }
 
     private static void waterLine(ClientGameTestContext context) {
@@ -154,7 +159,7 @@ public final class EvokerWalkthroughClientTest implements FabricClientGameTest {
         shoot(context, "17a_water_return_pressed");
         context.waitTicks(STATUS_TICKS);
         shoot(context, "17_water_return_cast");
-        effectTooltip(context, "18_water_return_effect_tooltip");
+        effectTooltip(context, BOOK + "water_return", "18_water_return_effect_tooltip");
     }
 
     private static void breathe(ClientGameTestContext context, TestSingleplayerContext world) {
@@ -228,16 +233,45 @@ public final class EvokerWalkthroughClientTest implements FabricClientGameTest {
         context.waitTicks(MESSAGE_TICKS);
     }
 
-    private static void effectTooltip(ClientGameTestContext context, String name) {
-        // 打开背包，光标指向右侧效果栏第一条（只有这一条功法状态）。效果栏贴着界面右边、与界面顶端对齐。
+    private static void effectTooltip(ClientGameTestContext context, String effectId, String name) {
+        // 打开背包后等一帧布局，用效果身份找新图标，不假定它是列表第一条。
         context.getInput().pressKey(options -> options.keyInventory);
         context.waitForScreen(InventoryScreen.class);
-        hover(context, screen -> new Vec2(screen.evokerLeft() + screen.evokerImageWidth() + EFFECT_GAP + EFFECT_HOVER,
-                screen.evokerTop() + EFFECT_HOVER));
         settle(context);
+        Vec2 cursor = context.computeOnClient(client -> {
+            StatusIcons.Layout layout = StatusIcons.lastLayout();
+            var slots = layout.slots();
+            for (int index = 0; index < slots.size(); index++) {
+                if (slots.get(index) instanceof Single single && single.effect().id().equals(effectId)) {
+                    StatusLayout.Area cell = layout.cells().get(index);
+                    int half = StatusLayout.FRAME_PIXELS / 2;
+                    float scale = (float) client.getWindow().getGuiScale();
+                    return new Vec2((cell.left() + half) * scale, (cell.top() + half) * scale);
+                }
+            }
+            throw new AssertionError("没有找到状态的单个图标：" + effectId);
+        });
+        context.getInput().setCursorPos(cursor.x, cursor.y);
+        settle(context);
+        verifyNotes(context, effectId);
         shoot(context, name);
         context.setScreen(() -> null);
         settle(context);
+    }
+
+    private static void verifyNotes(ClientGameTestContext context, String effectId) {
+        // 读取图标实际汇总的说明，必须包含功法组织状态的灰字；两端漏接都会在此失败。
+        context.runOnClient(client -> {
+            var effect = client.player.getEffect(TechniqueStatusBenefits.get(effectId).effect());
+            if (effect == null) {
+                throw new AssertionError("客户端缺少功法状态：" + effectId);
+            }
+            var expected = TechniqueEffectTooltips.lines(effect);
+            var actual = StatusNotesAccess.notes(effect);
+            if (expected.isEmpty() || !actual.containsAll(expected)) {
+                throw new AssertionError("功法状态图标缺少说明行：" + effectId);
+            }
+        });
     }
 
     private static void hoverSlotHolding(ClientGameTestContext context, String itemId) {

@@ -1,0 +1,15 @@
+{
+  "effects": [
+    "meridian_evoker:metal_edge",
+    "meridian_evoker:earth_quake",
+    "meridian_evoker:fire_burn",
+    "meridian_evoker:water_frost",
+    "meridian_evoker:wood_thunder"
+  ],
+  "group": {
+    "name": "status_group.meridian_evoker.infusion",
+    "icon": "meridian_evoker:status_group/infusion",
+    "merge_order": 20,
+    "display_order": 60
+  }
+}

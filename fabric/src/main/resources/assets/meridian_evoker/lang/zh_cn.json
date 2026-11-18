@@ -93,5 +93,6 @@
   "effect.meridian_evoker.earth_quake": "震土",
   "effect.meridian_evoker.fire_burn": "灼火",
   "effect.meridian_evoker.water_frost": "寒水",
-  "effect.meridian_evoker.wood_thunder": "惊雷"
+  "effect.meridian_evoker.wood_thunder": "惊雷",
+  "status_group.meridian_evoker.infusion": "附行"
 }
