@@ -1,7 +1,7 @@
 # 五脏诀唯一功法目录：上卷「养」强身五式与炼元五式，中卷「附」五行附伤五式（数值全部占位，见 docs/wiki/Integration.md）。
 schema_version: 1
 namespace: "meridian_evoker"
-binding_templates { id: "human:adult" version: 1 }
+binding_template_groups: "human:humanoid"
 books { id: "meridian_evoker:five_organs" display_name: "五脏诀" }
 volumes {
   id: "meridian_evoker:nourish"
