@@ -33,6 +33,10 @@ loom {
             runDir providers.gradleProperty('clienttestRunDir').getOrElse('build/clienttest')
             vmArg '-Dfabric.client.gametest'
             vmArg '-Dfabric.client.gametest.modid=meridian_evoker_clienttest'
+            // -PuiVersion=classic|modern 点名跑哪一版界面；不写就是缺省的那一版。
+            if (project.hasProperty('uiVersion')) {
+                vmArg "-Dmeridian.uiVersion=${project.property('uiVersion')}"
+            }
             programArgs '--width', '1280', '--height', '960'
             // 离线玩家名决定原版默认皮肤：Player991 是 classic 宽臂，Player507 是 slim 的 Alex。
             programArgs '--username', providers.gradleProperty('clienttestUsername').getOrElse('Player991')

@@ -11,6 +11,7 @@ import dev.kizuna.inventoryui.client.InventoryUiClient;
 import dev.kizuna.inventoryui.client.status.StatusIcons;
 import dev.kizuna.inventoryui.client.status.StatusLayout;
 import dev.kizuna.inventoryui.status.StatusArrangement.Single;
+import dev.kizuna.inventoryui.workspace.UiVersion;
 import dev.kizuna.meridian.evoker.clienttest.mixin.ContainerScreenAccess;
 import dev.kizuna.meridian.evoker.clienttest.mixin.StatusNotesAccess;
 import dev.kizuna.meridian.progression.client.ClientProgression;
@@ -32,7 +33,7 @@ import org.lwjgl.glfw.GLFW;
 /**
  * 照 Wiki「五脏诀上手」在一个新世界里走一遍，每步截图：卷轴提示、右键学卷、经脉未通、真元不够、肺炼、收势后两肺没有余力、
  * 歇过放金臂、背包状态图标的金臂说明、游炁放心火被拒、改境界到真炁并清空内腔后心炼起手被拒、一分钟后再清一次、开自动吐纳、
- * 吐纳窗口里的游离态与气态、关窗后心炼、心火说明，再肾炼、放归水（炼出的水行留在肾经）、归水说明。
+ * 吐纳窗口里的游离态与气态（新版界面里这两行在「纳入」的悬浮说明里，光标停上去拍）、关窗后心炼、心火说明，再肾炼、放归水（炼出的水行留在肾经）、归水说明。
  * 命令都走服务端，和玩家在聊天栏输入的相同；进架势和放招按真实按键（R 与数字键），吐纳窗口的复选框和按钮按真实光标点击。
  * 截图写到运行目录 {@code screenshots/}。
  */
@@ -56,6 +57,7 @@ public final class EvokerWalkthroughClientTest implements FabricClientGameTest {
     private static final String BOOK = "meridian_evoker:";
     private static final String CULTIVATION = "meridian_ui:cultivation";
     private static final String INVENTORY_UI_MODULES = "kizuna_inventory_ui";
+    private static final String VERSION_PROPERTY = "meridian.uiVersion";
 
     @Override
     public void runTest(ClientGameTestContext context) {
@@ -70,6 +72,8 @@ public final class EvokerWalkthroughClientTest implements FabricClientGameTest {
             context.runOnClient(client -> {
                 client.options.guiScale().set(GUI_SCALE);
                 client.resizeGui();
+                // 跑哪一版界面由运行任务点名（-PuiVersion=classic|modern）；没点就是缺省的那一版。
+                InventoryUiClient.runtime().uiVersion(UiVersion.of(System.getProperty(VERSION_PROPERTY)));
             });
             settle(context);
             learn(context, world);
@@ -185,13 +189,25 @@ public final class EvokerWalkthroughClientTest implements FabricClientGameTest {
         settle(context);
         shoot(context, "11_automatic_breathing_started");
         context.waitTicks(BREATHING_TICKS);
+        if (context.computeOnClient(client -> InventoryUiClient.runtime().uiVersion() == UiVersion.MODERN)) {
+            // 新版窗口不常显游离态、气态那两行，它们在「纳入」的悬浮说明里：光标停上去再拍。
+            pointAt(context, "breathing-qi");
+            settle(context);
+        }
         shoot(context, "12_breathing_gas_intake");
         context.setScreen(() -> null);
         settle(context);
     }
 
     private static void click(ClientGameTestContext context, String componentId) {
-        // 光标移到吐纳窗口里这个控件的中间按左键；控件坐标是界面坐标，乘缩放换算成窗口像素。
+        // 光标移到吐纳窗口里这个控件的中间按左键。
+        pointAt(context, componentId);
+        context.getInput().pressMouse(GLFW.GLFW_MOUSE_BUTTON_LEFT);
+        settle(context);
+    }
+
+    private static void pointAt(ClientGameTestContext context, String componentId) {
+        // 光标移到吐纳窗口里这个控件的中间；控件坐标是界面坐标，乘缩放换算成窗口像素。
         Vec2 cursor = context.computeOnClient(client -> {
             UIComponent component = cultivation().root().childById(UIComponent.class, componentId);
             float scale = (float) client.getWindow().getScreenWidth() / client.getWindow().getGuiScaledWidth();
@@ -199,8 +215,6 @@ public final class EvokerWalkthroughClientTest implements FabricClientGameTest {
                     (component.y() + component.height() / 2f) * scale);
         });
         context.getInput().setCursorPos(cursor.x, cursor.y);
-        context.getInput().pressMouse(GLFW.GLFW_MOUSE_BUTTON_LEFT);
-        settle(context);
     }
 
     private static boolean breathing(ClientGameTestContext context) {
