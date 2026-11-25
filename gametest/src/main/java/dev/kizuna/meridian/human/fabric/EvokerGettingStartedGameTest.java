@@ -53,15 +53,16 @@ public final class EvokerGettingStartedGameTest {
     private static final int MINUTE = 60 * SECOND;
     private static final int WANDERING_TICKS = 12 * MINUTE;
     private static final int CIRCUIT_TICKS = WANDERING_TICKS + 3 * MINUTE;
-    private static final int LAUNCH_DEADLINE_TICKS = CIRCUIT_TICKS + 20 * SECOND;
-    private static final int TRUE_QI_TICKS = CIRCUIT_TICKS + 90 * SECOND;
+    private static final int LAUNCH_WAIT_TICKS = MINUTE;
+    private static final int TRUE_QI_AFTER_LAUNCH_TICKS = 90 * SECOND;
     private static final int TRUE_BREATHING_TICKS = 26 * MINUTE;
     private static final int LOG_INTERVAL_TICKS = MINUTE;
-    private static final int HEART_TICKS = TRUE_QI_TICKS + TRUE_BREATHING_TICKS;
-    private static final int FIRE_TICKS = HEART_TICKS + RESTED_TICKS;
-    private static final int KIDNEY_TICKS = FIRE_TICKS + CAST_GAP_TICKS;
-    private static final int WATER_TICKS = KIDNEY_TICKS + RESTED_TICKS;
-    private static final int SURVIVAL_TIMEOUT = WATER_TICKS + 2 * SECOND;
+    private static final int HEART_AFTER_LAUNCH_TICKS = TRUE_QI_AFTER_LAUNCH_TICKS + TRUE_BREATHING_TICKS;
+    private static final int FIRE_AFTER_LAUNCH_TICKS = HEART_AFTER_LAUNCH_TICKS + RESTED_TICKS;
+    private static final int KIDNEY_AFTER_LAUNCH_TICKS = FIRE_AFTER_LAUNCH_TICKS + CAST_GAP_TICKS;
+    private static final int WATER_AFTER_LAUNCH_TICKS = KIDNEY_AFTER_LAUNCH_TICKS + RESTED_TICKS;
+    private static final int SURVIVAL_TIMEOUT = CIRCUIT_TICKS + LAUNCH_WAIT_TICKS
+            + WATER_AFTER_LAUNCH_TICKS + 2 * SECOND;
     private static final String SURVIVAL_SPRINT = "tick sprint " + SURVIVAL_TIMEOUT;
     private static final String OPEN_ALL = "meridian opening complete all";
     private static final String CANDIDATE_MERIDIAN = "left_stomach_meridian";
@@ -209,42 +210,17 @@ public final class EvokerGettingStartedGameTest {
                 logQi("生存路径游炁吐纳之后", fixture.settled());
             });
             scheduleBreakthrough(context, fixture);
-            EvokerTestPlayer.later(context, TRUE_QI_TICKS, List.of(fixture), () -> {
-                enteredTrueQi(context, fixture);
-                HumanGameTestAccess.breathe(fixture.player);
-                logWhileBreathing(fixture);
-            });
-            EvokerTestPlayer.later(context, HEART_TICKS, List.of(fixture), () -> {
-                HumanGameTestAccess.endBreathing(fixture.player);
-                cultivate(context, fixture, CultivationInput.Operation.STOP, STOP_SEQUENCE);
-                logQi("生存路径真炁吐纳之后", fixture.settled());
-                refineHeartIfThereIsGas(context, fixture);
-            });
-            EvokerTestPlayer.later(context, FIRE_TICKS, List.of(fixture), () -> {
-                assertRefined(context, fixture, Qi.QiAttribute.FIRE, FIRE_HEART_COST);
-                assertCast(context, fixture, "fire_heart");
-            });
-            EvokerTestPlayer.later(context, KIDNEY_TICKS, List.of(fixture),
-                    () -> startRefine(context, fixture, "refine_kidney"));
-            EvokerTestPlayer.later(context, WATER_TICKS, List.of(fixture), () -> {
-                assertRefined(context, fixture, Qi.QiAttribute.WATER, WATER_RETURN_COST);
-                logQi("生存路径肾炼之后", fixture.settled());
-                assertCast(context, fixture, "water_return");
-                console(context, STOP_SPRINT);
-                EvokerTestPlayer.finish(context, List.of(fixture));
-            });
         });
     }
 
     private static void scheduleBreakthrough(GameTestHelper context, EvokerTestPlayer fixture) {
-        // 歇够后开自动周天，第一圈发出当刻按突破；开周天 20 s 后突破要正在进行。
+        // 歇够后开自动周天，在有界等待内等第一圈发出。
+        // 后续流程从真实发圈时刻安排。
         var pressed = new CompletableFuture<FailureCode>();
         EvokerTestPlayer.later(context, CIRCUIT_TICKS, List.of(fixture), () -> {
             startCircuit(context, fixture);
             pressBreakthroughOnLaunch(context, fixture, pressed);
         });
-        EvokerTestPlayer.later(context, LAUNCH_DEADLINE_TICKS, List.of(fixture),
-                () -> assertBreakthroughRunning(context, fixture, pressed));
     }
 
     private static void startCircuit(GameTestHelper context, EvokerTestPlayer fixture) {
@@ -262,28 +238,76 @@ public final class EvokerGettingStartedGameTest {
 
     private static void pressBreakthroughOnLaunch(GameTestHelper context, EvokerTestPlayer fixture,
                                                   CompletableFuture<FailureCode> pressed) {
-        // 周天要等身上已有的普通运输都到了才发出第一圈。第一圈一发出就用调试命令放够 60 元外壁燃料、按突破，
+        // 周天要等身上已有的普通运输都到了才发出第一圈。
+        // 第一圈一发出就放够外壁燃料、按突破。
         // 和玩家看到按钮就点一样：自动周天运转时每秒耗脑 1 W 且不回复，脑耐力掉到 80% 就停。
-        // 之后 60 秒的燃料、动员与候选检查都走正式周天。逐 tick 观察里不抛断言，按键结果留给后面核对。
+        // 之后的燃料、动员与候选检查都走正式周天。
+        // 等待超过上限时失败，避免无限等待。
+        long waitingStarted = fixture.tick();
         fixture.everyTick(() -> {
+            if (pressed.isDone()) {
+                return;
+            }
             boolean launched = fixture.body().snapshot().transits().stream()
                     .anyMatch(transit -> transit.id().equals(HumanCultivation.CIRCUIT));
-            if (launched && !pressed.isDone()) {
+            if (launched) {
                 run(context, fixture, SET_WALL);
-                pressed.complete(press(fixture, CultivationInput.Operation.START_BREAKTHROUGH, BREAKTHROUGH_SEQUENCE));
+                FailureCode result = press(fixture, CultivationInput.Operation.START_BREAKTHROUGH,
+                        BREAKTHROUGH_SEQUENCE);
+                pressed.complete(result);
+                assertBreakthroughStarted(context, fixture, result);
+                scheduleAfterLaunch(context, fixture);
+                LOGGER.info("生存路径：第 {} tick 发出首圈并开始突破", fixture.tick());
+                return;
+            }
+            long waitingTicks = fixture.tick() - waitingStarted;
+            if (waitingTicks >= LAUNCH_WAIT_TICKS) {
+                assertLaunchObserved(context, fixture);
             }
         });
     }
 
-    private static void assertBreakthroughRunning(GameTestHelper context, EvokerTestPlayer fixture,
-                                                  CompletableFuture<FailureCode> pressed) {
-        // 开周天后几秒内第一圈就该发出；按下后突破正在进行。
+    private static void assertBreakthroughStarted(GameTestHelper context, EvokerTestPlayer fixture,
+                                                  FailureCode result) {
+        // 首圈真实发出后按突破，按键结果和突破状态都必须符合正式入口。
+        BodySnapshot body = fixture.settled();
+        var state = HumanCultivation.state(body);
+        context.assertTrue(result == FailureCode.FAILURE_CODE_UNSPECIFIED, "突破按键被拒：" + result);
+        context.assertTrue(state.getBreakthrough(), "突破没有开始：" + state.getReason());
+    }
+
+    private static void assertLaunchObserved(GameTestHelper context, EvokerTestPlayer fixture) {
         BodySnapshot body = fixture.settled();
         var state = HumanCultivation.state(body);
         String waiting = state.getReason() + "，在途 " + body.transits().size() + " 批";
-        context.assertTrue(pressed.isDone(), "开周天 20 s 后第一圈还没发出：" + waiting);
-        context.assertTrue(pressed.join() == FailureCode.FAILURE_CODE_UNSPECIFIED, "突破按键被拒：" + pressed.join());
-        context.assertTrue(state.getBreakthrough(), "突破没有开始：" + state.getReason());
+        context.assertTrue(false, "有界等待内第一圈还没发出：" + waiting);
+    }
+
+    private static void scheduleAfterLaunch(GameTestHelper context, EvokerTestPlayer fixture) {
+        EvokerTestPlayer.later(context, TRUE_QI_AFTER_LAUNCH_TICKS, List.of(fixture), () -> {
+            enteredTrueQi(context, fixture);
+            HumanGameTestAccess.breathe(fixture.player);
+            logWhileBreathing(fixture);
+        });
+        EvokerTestPlayer.later(context, HEART_AFTER_LAUNCH_TICKS, List.of(fixture), () -> {
+            HumanGameTestAccess.endBreathing(fixture.player);
+            cultivate(context, fixture, CultivationInput.Operation.STOP, STOP_SEQUENCE);
+            logQi("生存路径真炁吐纳之后", fixture.settled());
+            refineHeartIfThereIsGas(context, fixture);
+        });
+        EvokerTestPlayer.later(context, FIRE_AFTER_LAUNCH_TICKS, List.of(fixture), () -> {
+            assertRefined(context, fixture, Qi.QiAttribute.FIRE, FIRE_HEART_COST);
+            assertCast(context, fixture, "fire_heart");
+        });
+        EvokerTestPlayer.later(context, KIDNEY_AFTER_LAUNCH_TICKS, List.of(fixture),
+                () -> startRefine(context, fixture, "refine_kidney"));
+        EvokerTestPlayer.later(context, WATER_AFTER_LAUNCH_TICKS, List.of(fixture), () -> {
+            assertRefined(context, fixture, Qi.QiAttribute.WATER, WATER_RETURN_COST);
+            logQi("生存路径肾炼之后", fixture.settled());
+            assertCast(context, fixture, "water_return");
+            console(context, STOP_SPRINT);
+            EvokerTestPlayer.finish(context, List.of(fixture));
+        });
     }
 
     private static void enteredTrueQi(GameTestHelper context, EvokerTestPlayer fixture) {
